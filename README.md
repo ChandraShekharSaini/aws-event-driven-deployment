@@ -634,31 +634,7 @@ You should see the updated website.
 
 ---
 
-# 🔍 Useful Commands
 
-### Check Nginx
-
-```bash
-sudo systemctl status nginx
-```
-
-### Start Nginx
-
-```bash
-sudo systemctl start nginx
-```
-
-### Restart Nginx
-
-```bash
-sudo systemctl restart nginx
-```
-
-### Reload Nginx
-
-```bash
-sudo systemctl reload nginx
-```
 
 ### Check website files
 
