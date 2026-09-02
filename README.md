@@ -884,24 +884,6 @@ CSS
 
 ---
 
-## 👨‍💻 Learning Outcomes
 
-By completing this project, you learn:
 
-* S3 Event Notifications
-* Lambda functions
-* Lambda IAM roles
-* EC2 IAM roles
-* IAM least privilege
-* AWS Systems Manager
-* SSM Run Command
-* Automated deployment
-* Nginx web hosting
-* CloudWatch logging
-* Event-driven AWS architecture
-* Basic AWS CI/CD concepts
 
-```
-
-You can save the above directly as **`README.md`** in your GitHub repository.
-```
