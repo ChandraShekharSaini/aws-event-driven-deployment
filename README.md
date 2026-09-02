@@ -1,4 +1,4 @@
-# 🚀 AWS S3 → Lambda → EC2 → Nginx Website Deployment
+# 🚀 Event-Driven Website Auto-Deployment with AWS S3, Lambda & EC2
 
 This project demonstrates an automated website deployment workflow using **AWS S3, AWS Lambda, AWS Systems Manager (SSM), EC2, and Nginx**.
 
