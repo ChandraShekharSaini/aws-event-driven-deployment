@@ -6,46 +6,7 @@ This project implements an **event-driven automated website deployment system** 
 
 ## 🏗️ Architecture
 
-```text
-                    Developer
-                       │
-                       │ Upload / Update
-                       ▼
-                ┌───────────────┐
-                │   AWS S3      │
-                │   Bucket      │
-                └───────┬───────┘
-                        │
-                  ObjectCreated
-                        │
-                        ▼
-                ┌───────────────┐
-                │    Lambda     │
-                │   Function    │
-                └───────┬───────┘
-                        │
-                  ssm:SendCommand
-                        │
-                        ▼
-                ┌───────────────┐
-                │      EC2      │
-                │   Instance    │
-                └───────┬───────┘
-                        │
-                  SSM Run Command
-                        │
-                        ▼
-          /usr/share/nginx/html/index.html
-                        │
-                        ▼
-                ┌───────────────┐
-                │     Nginx     │
-                │ Web Server    │
-                └───────┬───────┘
-                        │
-                        ▼
-                  🌐 Website
-```
+![AWS Architecture](images/architecture.png)
 
 ---
 
