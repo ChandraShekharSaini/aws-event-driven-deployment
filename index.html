@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melody - Music Streaming</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #0b0b0f;
+            color: #fff;
+            min-height: 100vh;
+            padding-bottom: 100px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 240px;
+            height: 100vh;
+            background: #111116;
+            padding: 28px 20px;
+            border-right: 1px solid #24242c;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 45px;
+            color: #ff375f;
+        }
+
+        .logo span {
+            color: #fff;
+        }
+
+        .menu-title {
+            color: #777;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 25px 0 15px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: #aaa;
+            padding: 13px 10px;
+            margin-bottom: 5px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: #24242c;
+            color: #fff;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        /* Main */
+        .main {
+            margin-left: 240px;
+            padding: 25px 35px;
+        }
+
+        /* Top bar */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .search {
+            width: 420px;
+            background: #18181f;
+            border: 1px solid #292932;
+            border-radius: 30px;
+            padding: 13px 20px;
+            color: #fff;
+            outline: none;
+        }
+
+        .search::placeholder {
+            color: #777;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile img {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 330px;
+            border-radius: 25px;
+            padding: 45px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            background:
+                linear-gradient(90deg, rgba(0,0,0,.9), rgba(0,0,0,.35)),
+                url("https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=1400&q=80")
+                center/cover;
+        }
+
+        .hero-content {
+            max-width: 550px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #ff375f;
+            padding: 7px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 18px;
+        }
+
+        .hero h1 {
+            font-size: 52px;
+            line-height: 1.05;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            color: #ccc;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            border: none;
+            padding: 13px 24px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: .3s;
+        }
+
+        .btn-primary {
+            background: #ff375f;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            background: #ff1744;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,.12);
+            color: white;
+            border: 1px solid rgba(255,255,255,.2);
+        }
+
+        /* Sections */
+        .section {
+            margin-top: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+            font-size: 24px;
+        }
+
+        .see-all {
+            color: #ff375f;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* Cards */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: #15151b;
+            padding: 12px;
+            border-radius: 16px;
+            transition: .3s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            background: #1d1d25;
+        }
+
+        .cover {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .card h3 {
+            font-size: 15px;
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card p {
+            color: #888;
+            font-size: 13px;
+        }
+
+        .play-circle {
+            width: 42px;
+            height: 42px;
+            background: #ff375f;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 12px;
+            font-size: 18px;
+            float: right;
+        }
+
+        /* Artists */
+        .artists {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 25px;
+        }
+
+        .artist {
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .artist img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border: 3px solid transparent;
+            transition: .3s;
+        }
+
+        .artist:hover img {
+            border-color: #ff375f;
+            transform: scale(1.05);
+        }
+
+        .artist p {
+            color: #ccc;
+            font-size: 14px;
+        }
+
+        /* Player */
+        .player {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 82px;
+            background: rgba(18,18,23,.96);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid #292932;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 30px;
+            z-index: 20;
+        }
+
+        .song-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 250px;
+        }
+
+        .song-info img {
+            width: 52px;
+            height: 52px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .song-info h4 {
+            font-size: 14px;
+        }
+
+        .song-info p {
+            color: #888;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .control {
+            cursor: pointer;
+            font-size: 18px;
+            color: #bbb;
+        }
+
+        .play {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #fff;
+            color: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .volume {
+            width: 200px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .volume input {
+            width: 120px;
+        }
+
+        /* Responsive */
+        @media(max-width: 1200px) {
+            .cards {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .artists {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media(max-width: 900px) {
+            .sidebar {
+                width: 75px;
+                padding: 20px 10px;
+            }
+
+            .logo {
+                font-size: 20px;
+                text-align: center;
+            }
+
+            .logo span,
+            .nav-item span,
+            .menu-title {
+                display: none;
+            }
+
+            .nav-item {
+                justify-content: center;
+            }
+
+            .main {
+                margin-left: 75px;
+                padding: 20px;
+            }
+
+            .cards {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .artists {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .volume {
+                display: none;
+            }
+        }
+
+        @media(max-width: 600px) {
+            .main {
+                margin-left: 0;
+                padding: 15px;
+                padding-bottom: 100px;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .topbar {
+                gap: 10px;
+            }
+
+            .search {
+                width: 100%;
+            }
+
+            .profile {
+                display: none;
+            }
+
+            .hero {
+                padding: 30px;
+                min-height: 350px;
+            }
+
+            .hero h1 {
+                font-size: 38px;
+            }
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .artists {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .player {
+                padding: 10px 15px;
+            }
+
+            .song-info {
+                width: auto;
+            }
+
+            .controls .control {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            M<span>elody</span>
+        </div>
+
+        <div class="menu-title">Menu</div>
+
+        <div class="nav-item active">
+            <div class="nav-icon">⌂</div>
+            <span>Home</span>
+        </div>
+
+        <div class="nav-item">
+            <div class="nav-icon">⌕</div>
+            <span>Discover</span>
+        </div>
+
+        <div class="nav-item">
+            <div class="nav-icon">♡</div>
+            <span>Favorites</span>
+        </div>
+
+        <div class="nav-item">
+            <div class="nav-icon">♫</div>
+            <span>Playlists</span>
+        </div>
+
+        <div class="menu-title">Your Music</div>
+
+        <div class="nav-item">
+            <div class="nav-icon">◉</div>
+            <span>Recently Played</span>
+        </div>
+
+        <div class="nav-item">
+            <div class="nav-icon">⬇</div>
+            <span>Downloads</span>
+        </div>
+
+    </aside>
+
+
+    <!-- Main -->
+    <main class="main">
+
+        <!-- Top -->
+        <div class="topbar">
+
+            <input
+                class="search"
+                type="text"
+                placeholder="Search songs, artists and albums..."
+            >
+
+            <div class="profile">
+                <div>
+                    <strong>Alex Morgan</strong>
+                    <small style="display:block;color:#777;margin-top:3px;">
+                        Premium
+                    </small>
+                </div>
+
+                <img
+                    src="https://i.pravatar.cc/100?img=12"
+                    alt="Profile"
+                >
+            </div>
+
+        </div>
+
+
+        <!-- Hero -->
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <span class="tag">FEATURED PLAYLIST</span>
+
+                <h1>Feel the music.<br>Live the moment.</h1>
+
+                <p>
+                    Discover new sounds, explore trending artists,
+                    and create your perfect soundtrack for every moment.
+                </p>
+
+                <div class="buttons">
+                    <button class="btn btn-primary">
+                        ▶ Play Now
+                    </button>
+
+                    <button class="btn btn-secondary">
+                        + Add Playlist
+                    </button>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Trending -->
+        <section class="section">
+
+            <div class="section-header">
+                <h2>Trending Now</h2>
+                <div class="see-all">See All →</div>
+            </div>
+
+            <div class="cards">
+
+                <div class="card" onclick="playSong('Midnight Dreams','Luna')">
+                    <img
+                        class="cover"
+                        src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80"
+                        alt="Midnight Dreams"
+                    >
+
+                    <h3>Midnight Dreams</h3>
+                    <p>Luna</p>
+
+                    <div class="play-circle">▶</div>
+                </div>
+
+
+                <div class="card" onclick="playSong('Neon Lights','The Waves')">
+                    <img
+                        class="cover"
+                        src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=600&q=80"
+                        alt="Neon Lights"
+                    >
+
+                    <h3>Neon Lights</h3>
+                    <p>The Waves</p>
+
+                    <div class="play-circle">▶</div>
+                </div>
+
+
+                <div class="card" onclick="playSong('Lost in Time','Nova')">
+                    <img
+                        class="cover"
+                        src="https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?auto=format&fit=crop&w=600&q=80"
+                        alt="Lost in Time"
+                    >
+
+                    <h3>Lost in Time</h3>
+                    <p>Nova</p>
+
+                    <div class="play-circle">▶</div>
+                </div>
+
+
+                <div class="card" onclick="playSong('Ocean Eyes','Mila')">
+                    <img
+                        class="cover"
+                        src="https://images.unsplash.com/photo-1521337581100-8ca9a73a5f79?auto=format&fit=crop&w=600&q=80"
+                        alt="Ocean Eyes"
+                    >
+
+                    <h3>Ocean Eyes</h3>
+                    <p>Mila</p>
+
+                    <div class="play-circle">▶</div>
+                </div>
+
+
+                <div class="card" onclick="playSong('Electric Soul','Ray')">
+                    <img
+                        class="cover"
+                        src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=600&q=80"
+                        alt="Electric Soul"
+                    >
+
+                    <h3>Electric Soul</h3>
+                    <p>Ray</p>
+
+                    <div class="play-circle">▶</div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Popular Artists -->
+        <section class="section">
+
+            <div class="section-header">
+                <h2>Popular Artists</h2>
+                <div class="see-all">Explore →</div>
+            </div>
+
+            <div class="artists">
+
+                <div class="artist">
+                    <img
+                        src="https://i.pravatar.cc/300?img=47"
+                        alt="Artist"
+                    >
+                    <p>Aria Rose</p>
+                </div>
+
+                <div class="artist">
+                    <img
+                        src="https://i.pravatar.cc/300?img=11"
+                        alt="Artist"
+                    >
+                    <p>James Cole</p>
+                </div>
+
+                <div class="artist">
+                    <img
+                        src="https://i.pravatar.cc/300?img=32"
+                        alt="Artist"
+                    >
+                    <p>Sofia</p>
+                </div>
+
+                <div class="artist">
+                    <img
+                        src="https://i.pravatar.cc/300?img=53"
+                        alt="Artist"
+                    >
+                    <p>Daniel Ray</p>
+                </div>
+
+                <div class="artist">
+                    <img
+                        src="https://i.pravatar.cc/300?img=44"
+                        alt="Artist"
+                    >
+                    <p>Emma</p>
+                </div>
+
+                <div class="artist">
+                    <img
+                        src="https://i.pravatar.cc/300?img=68"
+                        alt="Artist"
+                    >
+                    <p>Leo Martin</p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Recently Played -->
+        <section class="section">
+
+            <div class="section-header">
+                <h2>Recently Played</h2>
+                <div class="see-all">See All →</div>
+            </div>
+
+            <div class="cards">
+
+                <div class="card" onclick="playSong('Golden Hour','JVKE')">
+
+                    <img
+                        class="cover"
+                        src="https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=600&q=80"
+                        alt="Golden Hour"
+                    >
+
+                    <h3>Golden Hour</h3>
+                    <p>JVKE</p>
+
+                    <div class="play-circle">▶</div>
+
+                </div>
+
+
+                <div class="card" onclick="playSong('After Dark','Mr.Kitty')">
+
+                    <img
+                        class="cover"
+                        src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=600&q=80"
+                        alt="After Dark"
+                    >
+
+                    <h3>After Dark</h3>
+                    <p>Mr.Kitty</p>
+
+                    <div class="play-circle">▶</div>
+
+                </div>
+
+
+                <div class="card" onclick="playSong('Blinding Lights','The Weeknd')">
+
+                    <img
+                        class="cover"
+                        src="https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=600&q=80"
+                        alt="Blinding Lights"
+                    >
+
+                    <h3>Blinding Lights</h3>
+                    <p>The Weeknd</p>
+
+                    <div class="play-circle">▶</div>
+
+                </div>
+
+
+                <div class="card" onclick="playSong('Starboy','The Weeknd')">
+
+                    <img
+                        class="cover"
+                        src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=600&q=80"
+                        alt="Starboy"
+                    >
+
+                    <h3>Starboy</h3>
+                    <p>The Weeknd</p>
+
+                    <div class="play-circle">▶</div>
+
+                </div>
+
+
+                <div class="card" onclick="playSong('Dreams','Fleetwood')">
+
+                    <img
+                        class="cover"
+                        src="https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=600&q=80"
+                        alt="Dreams"
+                    >
+
+                    <h3>Dreams</h3>
+                    <p>Fleetwood</p>
+
+                    <div class="play-circle">▶</div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- Music Player -->
+    <div class="player">
+
+        <div class="song-info">
+
+            <img
+                id="playerImage"
+                src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=200&q=80"
+                alt="Song"
+            >
+
+            <div>
+                <h4 id="playerTitle">Midnight Dreams</h4>
+                <p id="playerArtist">Luna</p>
+            </div>
+
+        </div>
+
+
+        <div class="controls">
+
+            <div class="control">↶</div>
+
+            <div class="control">◀</div>
+
+            <div
+                class="play"
+                onclick="togglePlay()"
+                id="playButton"
+            >
+                ▶
+            </div>
+
+            <div class="control">▶</div>
+
+            <div class="control">↷</div>
+
+        </div>
+
+
+        <div class="volume">
+
+            <span>🔊</span>
+
+            <input
+                type="range"
+                min="0"
+                max="100"
+                value="70"
+            >
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        let playing = false;
+
+        function playSong(title, artist) {
+
+            document.getElementById("playerTitle").innerText = title;
+            document.getElementById("playerArtist").innerText = artist;
+
+            playing = true;
+
+            document.getElementById("playButton").innerText = "Ⅱ";
+        }
+
+
+        function togglePlay() {
+
+            playing = !playing;
+
+            document.getElementById("playButton").innerText =
+                playing ? "Ⅱ" : "▶";
+        }
+
+    </script>
+
+</body>
+</html>
+
