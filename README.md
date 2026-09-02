@@ -1,8 +1,6 @@
 # 🚀 Event-Driven Website Auto-Deployment
 
-This project demonstrates an automated website deployment workflow using **AWS S3, AWS Lambda, AWS Systems Manager (SSM), EC2, and Nginx**.
-
-Whenever `index.html` is updated in an S3 bucket, an S3 event automatically triggers a Lambda function. Lambda uses **AWS Systems Manager Run Command** to update the `index.html` file inside the Nginx web directory on an EC2 instance.
+This project implements an **event-driven automated website deployment system** using **AWS S3, Lambda, AWS Systems Manager (SSM), EC2, and Nginx**. Whenever `index.html` is uploaded or updated in the S3 bucket, an **S3 event automatically triggers the Lambda function**, which uses **SSM Run Command** to synchronize the latest file with the Nginx web directory on the EC2 instance. This eliminates manual deployment and enables **automatic, reliable, and event-driven website updates**.
 
 ---
 
