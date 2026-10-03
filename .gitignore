@@ -1,0 +1,48 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+
+# Terraform variable files - may contain secrets
+*.tfvars
+*.tfvars.json
+
+# Keep example variables
+!terraform.tfvars.example
+
+# Terraform plan files
+*.tfplan
+*.plan
+
+# Terraform lock file
+# Recommended: DO NOT ignore this file
+# .terraform.lock.hcl
+
+# Terraform CLI configuration
+.terraformrc
+terraform.rc
+
+# Lambda build/package files
+*.zip
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Temporary files
+*.tmp
+*.temp
