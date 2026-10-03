@@ -1,0 +1,39 @@
+name: Deploy Website
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+
+  deploy:
+    name: Deploy Website to S3
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Upload index.html
+        run: |
+          aws s3 cp website/index.html \
+            s3://my-nginx-website-890123/index.html \
+            --content-type text/html
+
+      - name: Deployment Started
+        run: |
+          echo "index.html uploaded to S3"
+          echo "S3 ObjectCreated event will trigger Lambda"
+          echo "Lambda will deploy the file to EC2"
