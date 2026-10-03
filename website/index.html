@@ -1,265 +1,603 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CloudMusic - Chandra Shekhar/title>
+
+    <title>CloudTech Mobile</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+        }
+
+        /* Header */
+        header {
+            background: #111827;
+            color: white;
+            padding: 18px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            max-width: 1100px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .logo span {
+            color: #60a5fa;
+        }
+
+        .menu {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+        }
+
+        .menu a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .menu a:hover {
+            color: #60a5fa;
+        }
+
+        .menu-btn {
+            display: none;
+            font-size: 26px;
+            cursor: pointer;
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, #111827, #1d4ed8);
+            color: white;
+            padding: 70px 20px;
+        }
+
+        .hero-container {
+            max-width: 1100px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 50px;
+        }
+
+        .hero h1 {
+            font-size: 52px;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span {
+            color: #60a5fa;
+        }
+
+        .hero p {
+            font-size: 18px;
+            line-height: 1.7;
+            color: #dbeafe;
+            margin-bottom: 30px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #1d4ed8;
+        }
+
+        .btn-secondary {
+            border: 1px solid #93c5fd;
+            color: white;
+        }
+
+        /* Phone */
+        .phone {
+            width: 280px;
+            height: 540px;
+            margin: auto;
+            background: #0f172a;
+            border: 8px solid #374151;
+            border-radius: 38px;
+            padding: 20px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+            position: relative;
+        }
+
+        .phone-notch {
+            width: 90px;
+            height: 22px;
+            background: #374151;
+            border-radius: 20px;
+            margin: -10px auto 20px;
+        }
+
+        .phone-screen {
+            background: linear-gradient(160deg, #2563eb, #7c3aed);
+            height: 455px;
+            border-radius: 24px;
+            padding: 25px 18px;
+            color: white;
+        }
+
+        .phone-screen h3 {
+            font-size: 25px;
+            margin-bottom: 10px;
+        }
+
+        .phone-screen p {
+            font-size: 13px;
+            color: #e0e7ff;
+        }
+
+        .mobile-card {
+            margin-top: 25px;
+            background: rgba(255,255,255,0.15);
+            padding: 18px;
+            border-radius: 16px;
+        }
+
+        .mobile-card strong {
+            font-size: 25px;
+        }
+
+        /* Features */
+        .features {
+            padding: 70px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            max-width: 650px;
+            margin: auto auto 45px;
+        }
+
+        .section-title h2 {
+            font-size: 35px;
+            margin-bottom: 12px;
+        }
+
+        .section-title p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .feature-grid {
+            max-width: 1100px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .feature {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 8px 30px rgba(15,23,42,0.08);
+        }
+
+        .icon {
+            width: 50px;
+            height: 50px;
+            background: #dbeafe;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .feature h3 {
+            margin-bottom: 10px;
+        }
+
+        .feature p {
+            color: #64748b;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        /* Stats */
+        .stats {
+            background: #111827;
+            color: white;
+            padding: 55px 20px;
+        }
+
+        .stats-grid {
+            max-width: 900px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            text-align: center;
+            gap: 20px;
+        }
+
+        .stat h2 {
+            font-size: 38px;
+            color: #60a5fa;
+            margin-bottom: 8px;
+        }
+
+        .stat p {
+            color: #cbd5e1;
+        }
+
+        /* CTA */
+        .cta {
+            padding: 70px 20px;
+            text-align: center;
+        }
+
+        .cta-box {
+            max-width: 850px;
+            margin: auto;
+            padding: 50px 25px;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: white;
+        }
+
+        .cta h2 {
+            font-size: 35px;
+            margin-bottom: 15px;
+        }
+
+        .cta p {
+            color: #dbeafe;
+            margin-bottom: 25px;
+        }
+
+        /* Footer */
+        footer {
+            background: #020617;
+            color: #94a3b8;
+            text-align: center;
+            padding: 25px 20px;
+            font-size: 14px;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+
+            .menu {
+                display: none;
+            }
+
+            .menu-btn {
+                display: block;
+            }
+
+            .hero {
+                padding: 50px 20px;
+            }
+
+            .hero-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 45px;
+            }
+
+            .hero h1 {
+                font-size: 39px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .buttons {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .phone {
+                width: 250px;
+                height: 500px;
+            }
+
+            .phone-screen {
+                height: 420px;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 35px;
+            }
+
+            .section-title h2 {
+                font-size: 29px;
+            }
+
+            .cta h2 {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 400px) {
+
+            .hero h1 {
+                font-size: 33px;
+            }
+
+            .phone {
+                width: 225px;
+                height: 460px;
+            }
+
+            .phone-screen {
+                height: 380px;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 
-<body style="margin:0; font-family:Arial,Helvetica,sans-serif; background:#080b14; color:#fff;">
+<body>
 
-    <!-- Header -->
-    <header style="height:70px; display:flex; align-items:center; justify-content:space-between; padding:0 6%; background:#0d1020; border-bottom:1px solid #20243a; position:sticky; top:0; z-index:100;">
+<header>
+    <nav class="navbar">
 
-        <div style="font-size:25px; font-weight:bold; color:#8b5cf6;">
-            🎵 CloudMusic
+        <div class="logo">
+            Cloud<span>Tech</span>
         </div>
 
-        <nav style="display:flex; gap:25px;">
-            <a href="#" style="color:#fff; text-decoration:none; font-size:15px;">Home</a>
-            <a href="#" style="color:#aaa; text-decoration:none; font-size:15px;">Music</a>
-            <a href="#" style="color:#aaa; text-decoration:none; font-size:15px;">Videos</a>
-            <a href="#" style="color:#aaa; text-decoration:none; font-size:15px;">Artists</a>
-        </nav>
+        <ul class="menu">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
 
-        <button style="border:0; padding:10px 20px; border-radius:25px; background:#8b5cf6; color:white; font-weight:bold; cursor:pointer;">
-            Sign In
-        </button>
-    </header>
+        <div class="menu-btn">
+            ☰
+        </div>
+
+    </nav>
+</header>
 
 
-    <!-- Hero -->
-    <section style="padding:80px 6%; background:linear-gradient(135deg,#11152b,#25134a); display:flex; align-items:center; justify-content:space-between; gap:50px;">
+<section class="hero" id="home">
 
-        <div style="max-width:600px;">
+    <div class="hero-container">
 
-            <div style="color:#a78bfa; font-size:14px; font-weight:bold; margin-bottom:15px;">
-                🔥 TRENDING NOW
-            </div>
+        <div>
 
-         
+            <h1>
+                Build. Deploy.
+                <span>Scale.</span>
+            </h1>
 
-            <p style="font-size:18px; line-height:1.7; color:#b7b9c8;">
-              
-                enjoy your favorite artists in one place.
+            <p>
+                A modern cloud platform designed to help
+                teams build powerful applications and deploy
+                them faster.
             </p>
 
-            <div style="margin-top:30px; display:flex; gap:15px;">
+            <div class="buttons">
 
-                <button style="padding:14px 28px; border:0; border-radius:30px; background:#8b5cf6; color:#fff; font-size:16px; font-weight:bold; cursor:pointer;">
-                    ▶ Start Listening
-                </button>
+                <a href="#features" class="btn btn-primary">
+                    Get Started
+                </a>
 
-                <button style="padding:14px 28px; border:1px solid #555b78; border-radius:30px; background:transparent; color:#fff; font-size:16px; cursor:pointer;">
-                    Explore Videos
-                </button>
-
-            </div>
-
-        </div>
-
-        <!-- Music visual -->
-        <div style="width:360px; height:360px; border-radius:30px; background:linear-gradient(145deg,#8b5cf6,#ec4899); display:flex; justify-content:center; align-items:center; box-shadow:0 25px 70px rgba(139,92,246,.35);">
-
-            <div style="width:210px; height:210px; border-radius:50%; background:#111; display:flex; justify-content:center; align-items:center; box-shadow:0 0 0 15px rgba(255,255,255,.08);">
-
-                <div style="width:70px; height:70px; border-radius:50%; background:#8b5cf6; display:flex; justify-content:center; align-items:center; font-size:28px;">
-                    ▶
-                </div>
+                <a href="#about" class="btn btn-secondary">
+                    Learn More
+                </a>
 
             </div>
 
         </div>
 
-    </section>
 
+        <div class="phone">
 
-    <!-- Trending -->
-    <section style="padding:60px 6%;">
+            <div class="phone-notch"></div>
 
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+            <div class="phone-screen">
 
-            <h2 style="font-size:30px; margin:0;">
-                🎧 Trending Music
-            </h2>
+                <h3>Hello 👋</h3>
 
-            <a href="#" style="color:#a78bfa; text-decoration:none;">
-                View All →
-            </a>
-
-        </div>
-
-
-        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:25px;">
-
-            <!-- Card 1 -->
-            <div style="background:#111522; border-radius:18px; padding:18px; border:1px solid #20243a;">
-
-                <div style="height:190px; border-radius:14px; background:linear-gradient(135deg,#f97316,#ec4899); display:flex; justify-content:center; align-items:center; font-size:55px;">
-                    🎵
-                </div>
-
-                <h3 style="margin:18px 0 6px;">Midnight Dreams</h3>
-                <p style="margin:0; color:#8f93a8;">Alex Morgan</p>
-
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:18px;">
-
-                    <span style="color:#777c94;">3:42</span>
-
-                    <button style="width:40px; height:40px; border-radius:50%; border:0; background:#8b5cf6; color:white;">
-                        ▶
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <!-- Card 2 -->
-            <div style="background:#111522; border-radius:18px; padding:18px; border:1px solid #20243a;">
-
-                <div style="height:190px; border-radius:14px; background:linear-gradient(135deg,#06b6d4,#3b82f6); display:flex; justify-content:center; align-items:center; font-size:55px;">
-                    🎤
-                </div>
-
-                <h3 style="margin:18px 0 6px;">Ocean Lights</h3>
-                <p style="margin:0; color:#8f93a8;">Luna Ray</p>
-
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:18px;">
-
-                    <span style="color:#777c94;">4:15</span>
-
-                    <button style="width:40px; height:40px; border-radius:50%; border:0; background:#8b5cf6; color:white;">
-                        ▶
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <!-- Card 3 -->
-            <div style="background:#111522; border-radius:18px; padding:18px; border:1px solid #20243a;">
-
-                <div style="height:190px; border-radius:14px; background:linear-gradient(135deg,#22c55e,#14b8a6); display:flex; justify-content:center; align-items:center; font-size:55px;">
-                    🎸
-                </div>
-
-                <h3 style="margin:18px 0 6px;">Electric Heart</h3>
-                <p style="margin:0; color:#8f93a8;">The Waves</p>
-
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:18px;">
-
-                    <span style="color:#777c94;">3:58</span>
-
-                    <button style="width:40px; height:40px; border-radius:50%; border:0; background:#8b5cf6; color:white;">
-                        ▶
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <!-- Card 4 -->
-            <div style="background:#111522; border-radius:18px; padding:18px; border:1px solid #20243a;">
-
-                <div style="height:190px; border-radius:14px; background:linear-gradient(135deg,#eab308,#f97316); display:flex; justify-content:center; align-items:center; font-size:55px;">
-                    🎹
-                </div>
-
-                <h3 style="margin:18px 0 6px;">Golden Hour</h3>
-                <p style="margin:0; color:#8f93a8;">Mia Carter</p>
-
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:18px;">
-
-                    <span style="color:#777c94;">4:05</span>
-
-                    <button style="width:40px; height:40px; border-radius:50%; border:0; background:#8b5cf6; color:white;">
-                        ▶
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- Featured Video -->
-    <section style="padding:60px 6%; background:#0d1020;">
-
-        <h2 style="font-size:30px; margin-bottom:30px;">
-            🎬 Featured Music Video
-        </h2>
-
-        <div style="max-width:1000px; margin:auto; background:#151a2c; border-radius:22px; overflow:hidden; border:1px solid #272c45;">
-
-            <div style="height:430px; background:linear-gradient(135deg,#312e81,#701a75,#111827); display:flex; justify-content:center; align-items:center;">
-
-                <button style="width:80px; height:80px; border:0; border-radius:50%; background:#fff; color:#8b5cf6; font-size:30px; cursor:pointer;">
-                    ▶
-                </button>
-
-            </div>
-
-            <div style="padding:25px;">
-
-                <h2 style="margin:0 0 8px;">
-                    Neon Nights
-                </h2>
-
-                <p style="color:#9499b0; margin:0;">
-                    Official Music Video • CloudMusic Originals
+                <p>
+                    Welcome to your cloud dashboard.
                 </p>
 
+                <div class="mobile-card">
+
+                    <p>Applications</p>
+
+                    <strong>24</strong>
+
+                </div>
+
+                <div class="mobile-card">
+
+                    <p>Deployments</p>
+
+                    <strong>128</strong>
+
+                </div>
+
+                <div class="mobile-card">
+
+                    <p>Uptime</p>
+
+                    <strong>99.9%</strong>
+
+                </div>
+
             </div>
 
         </div>
 
-    </section>
+    </div>
+
+</section>
 
 
-    <!-- Newsletter -->
-    <section style="padding:70px 6%; text-align:center;">
+<section class="features" id="features">
 
-        <h2 style="font-size:35px;">
-            Never Miss a Beat 🎶
-        </h2>
+    <div class="section-title">
 
-        <p style="color:#999fb4; font-size:17px;">
-            Get the latest music and video updates.
+        <h2>Everything You Need</h2>
+
+        <p>
+            Powerful features for modern cloud applications
+            and DevOps workflows.
         </p>
 
-        <div style="margin:30px auto 0; max-width:500px; display:flex; gap:10px;">
+    </div>
 
-            <input
-                type="email"
-                placeholder="Enter your email"
-                style="flex:1; padding:15px 20px; border-radius:30px; border:1px solid #30364f; background:#111522; color:white; outline:none;"
-            >
 
-            <button style="padding:15px 25px; border:0; border-radius:30px; background:#8b5cf6; color:white; font-weight:bold;">
-                Subscribe
-            </button>
+    <div class="feature-grid">
+
+        <div class="feature">
+
+            <div class="icon">⚡</div>
+
+            <h3>Fast Deployment</h3>
+
+            <p>
+                Deploy your applications quickly with
+                automated CI/CD pipelines.
+            </p>
 
         </div>
 
-    </section>
+
+        <div class="feature">
+
+            <div class="icon">☁</div>
+
+            <h3>Cloud Ready</h3>
+
+            <p>
+                Designed to run efficiently on modern
+                cloud infrastructure.
+            </p>
+
+        </div>
 
 
-    <!-- Footer -->
-    <footer style="padding:30px 6%; background:#0d1020; border-top:1px solid #20243a; text-align:center; color:#777c94;">
+        <div class="feature">
 
-        <p style="margin:0;">
-            © 2026 CloudMusic. Built with AWS + Terraform + Ubuntu + Nginx.
+            <div class="icon">🔒</div>
+
+            <h3>Secure</h3>
+
+            <p>
+                Protect your applications with modern
+                security practices.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="stats">
+
+    <div class="stats-grid">
+
+        <div class="stat">
+
+            <h2>99.9%</h2>
+
+            <p>Uptime</p>
+
+        </div>
+
+        <div class="stat">
+
+            <h2>128+</h2>
+
+            <p>Deployments</p>
+
+        </div>
+
+        <div class="stat">
+
+            <h2>24/7</h2>
+
+            <p>Monitoring</p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="cta" id="about">
+
+    <div class="cta-box">
+
+        <h2>Ready to Build Something Great?</h2>
+
+        <p>
+            Start your next project with CloudTech today.
         </p>
 
-    </footer>
+        <a href="#contact" class="btn btn-primary">
+            Start Now
+        </a>
+
+    </div>
+
+</section>
+
+
+<footer id="contact">
+
+    <p>
+        © 2026 CloudTech. Built for the modern web.
+    </p>
+
+</footer>
 
 </body>
 </html>
-
