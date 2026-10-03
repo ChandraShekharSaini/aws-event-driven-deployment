@@ -1,18 +1,25 @@
 
-name: Test AWS Access Keys
+name: Deploy Website
 
 on:
+  push:
+    branches:
+      - main
+
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  test-aws:
-    name: Test GitHub to AWS Authentication
+  deploy:
+    name: Deploy Website to S3
     runs-on: ubuntu-latest
 
     steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
       - name: Check GitHub Information
         run: |
@@ -36,13 +43,19 @@ jobs:
         run: |
           aws s3 ls s3://my-nginx-website-890123
 
-      - name: Test Upload
+      - name: Upload Website
         run: |
-          echo "<h1>GitHub Actions Access Key Test</h1>" > test.html
-
-          aws s3 cp test.html \
-            s3://my-nginx-website-890123/test.html \
+          aws s3 cp website/index.html \
+            s3://my-nginx-website-890123/index.html \
             --content-type text/html
 
-          echo "S3 upload successful!"
+          echo "Website uploaded successfully!"
+
+      - name: Verify Upload
+        run: |
+          aws s3api head-object \
+            --bucket my-nginx-website-890123 \
+            --key index.html
+
+          echo "index.html exists in S3"
 
