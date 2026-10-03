@@ -6,27 +6,7 @@ Whenever `index.html` is uploaded or updated in the S3 bucket, an **S3 ObjectCre
 
 Lambda then uses **AWS Systems Manager Run Command** to execute commands on the EC2 instance. The EC2 instance downloads the latest `index.html` from S3 and copies it to the Nginx web directory.
 
-```text
-Developer
-    ↓
-GitHub
-    ↓
-index.html
-    ↓
-S3
-    ↓
-S3 ObjectCreated Event
-    ↓
-Lambda
-    ↓
-SSM Run Command
-    ↓
-EC2
-    ↓
-Nginx
-    ↓
-Live Website
-```
+
 
 This eliminates manual deployment and provides a simple **event-driven CI/CD-style deployment workflow**.
 
