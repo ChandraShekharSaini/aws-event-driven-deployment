@@ -1,11 +1,10 @@
-data "aws_ssm_parameter" "al2023" {
-  name = "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64"
+data "aws_ssm_parameter" "ubuntu" {
+  name = "/aws/service/canonical/ubuntu/server/24.04/stable/current/amd64/hvm/ebs-gp3/ami-id"
 }
 
 
-
 resource "aws_instance" "web" {
-  ami = data.aws_ssm_parameter.al2023.value
+  ami = data.aws_ssm_parameter.ubuntu.value
 
   instance_type = "t3.micro"
 
@@ -19,63 +18,80 @@ resource "aws_instance" "web" {
 
   associate_public_ip_address = true
 
-  user_data = <<-EOF
-              #!/bin/bash
+ user_data = <<-EOF
+#!/bin/bash
 
-              set -eux
+set -eux
 
-              apt-get update -y
+apt-get update -y
 
-              apt-get install -y nginx awscli
+apt-get install -y nginx curl unzip
 
-              systemctl enable nginx
-              systemctl start nginx
+# Install AWS CLI v2
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" \
+  -o "/tmp/awscliv2.zip"
 
-              mkdir -p /usr/share/nginx/html
+unzip -q /tmp/awscliv2.zip -d /tmp
 
-              cat > /usr/share/nginx/html/index.html <<'HTML'
-              <!DOCTYPE html>
-              <html>
-              <head>
-                  <meta charset="UTF-8">
-                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                  <title>CloudTech Website</title>
+/tmp/aws/install
 
-                  <style>
-                      body {
-                          margin: 0;
-                          height: 100vh;
-                          display: flex;
-                          justify-content: center;
-                          align-items: center;
-                          font-family: Arial, sans-serif;
-                          background: linear-gradient(135deg, #667eea, #764ba2);
-                          color: white;
-                          text-align: center;
-                      }
+# Verify AWS CLI
+/usr/local/bin/aws --version
 
-                      h1 {
-                          font-size: 50px;
-                          margin-bottom: 15px;
-                      }
+# Enable and start Nginx
+systemctl enable nginx
+systemctl start nginx
 
-                      p {
-                          font-size: 20px;
-                      }
-                  </style>
-              </head>
+mkdir -p /var/www/html
 
-              <body>
-                  <div>
-                      <h1>🚀 CloudTech Website</h1>
-                      <p>Deployed using AWS + Terraform + Ubuntu</p>
-                  </div>
-              </body>
-              </html>
-              HTML
+cat > /var/www/html/index.html <<'HTML'
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudTech Website</title>
 
-              systemctl reload nginx
-              EOF
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 50px;
+        }
+
+        p {
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <h1>🚀 CloudTech Website</h1>
+        <p>Deployed using AWS + Terraform + Ubuntu</p>
+    </div>
+</body>
+</html>
+HTML
+
+chown -R www-data:www-data /var/www/html
+chmod 644 /var/www/html/index.html
+
+nginx -t
+systemctl reload nginx
+
+echo "Setup completed successfully"
+EOF
 
   tags = {
     Name = "${var.project_name}-web"
