@@ -1,12 +1,87 @@
 # 🚀 Event-Driven Website Auto-Deployment
 
-This project implements an **event-driven automated website deployment system** using **AWS S3, Lambda, AWS Systems Manager (SSM), EC2, and Nginx**. Whenever `index.html` is uploaded or updated in the S3 bucket, an **S3 event automatically triggers the Lambda function**, which uses **SSM Run Command** to synchronize the latest file with the Nginx web directory on the EC2 instance. This eliminates manual deployment and enables **automatic, reliable, and event-driven website updates**.
+This project implements an **event-driven automated website deployment system** using **AWS S3, Lambda, AWS Systems Manager (SSM), EC2, Nginx, IAM, and GitHub**.
+
+Whenever `index.html` is uploaded or updated in the S3 bucket, an **S3 ObjectCreated event automatically triggers Lambda**.
+
+Lambda then uses **AWS Systems Manager Run Command** to execute commands on the EC2 instance. The EC2 instance downloads the latest `index.html` from S3 and copies it to the Nginx web directory.
+
+```text
+Developer
+    ↓
+GitHub
+    ↓
+index.html
+    ↓
+S3
+    ↓
+S3 ObjectCreated Event
+    ↓
+Lambda
+    ↓
+SSM Run Command
+    ↓
+EC2
+    ↓
+Nginx
+    ↓
+Live Website
+```
+
+This eliminates manual deployment and provides a simple **event-driven CI/CD-style deployment workflow**.
 
 ---
 
-## 🏗️ Architecture
+# 🏗️ Architecture
 
-![AWS Architecture](images/architecture.png)
+```text
+                  ┌─────────────────┐
+                  │    Developer    │
+                  └────────┬────────┘
+                           │
+                           ▼
+                  ┌─────────────────┐
+                  │     GitHub      │
+                  │  Source Code    │
+                  └────────┬────────┘
+                           │
+                       Upload/Sync
+                           │
+                           ▼
+                  ┌─────────────────┐
+                  │       S3        │
+                  │   index.html    │
+                  └────────┬────────┘
+                           │
+                   ObjectCreated Event
+                           │
+                           ▼
+                  ┌─────────────────┐
+                  │     Lambda      │
+                  │   Python/Boto3  │
+                  └────────┬────────┘
+                           │
+                    SSM SendCommand
+                           │
+                           ▼
+                  ┌─────────────────┐
+                  │       EC2       │
+                  │   SSM Agent     │
+                  └────────┬────────┘
+                           │
+                    aws s3 cp
+                           │
+                           ▼
+             /usr/share/nginx/html/index.html
+                           │
+                           ▼
+                  ┌─────────────────┐
+                  │      Nginx      │
+                  └────────┬────────┘
+                           │
+                           ▼
+                     🌐 Website
+```
 
 ---
 
@@ -14,7 +89,7 @@ This project implements an **event-driven automated website deployment system** 
 
 The objective is to automatically deploy changes made to `index.html`.
 
-### Without automation
+## Without Automation
 
 ```text
 Developer
@@ -25,15 +100,19 @@ Login to EC2
    ↓
 Download file
    ↓
-Copy file to Nginx
+Copy file
+   ↓
+Restart/Reload Nginx
 ```
 
-### With this project
+## With Automation
 
 ```text
 Developer
    ↓
-Upload index.html to S3
+GitHub / Upload
+   ↓
+S3
    ↓
 S3 Event
    ↓
@@ -56,11 +135,12 @@ Website Updated Automatically
 | ------------------- | -------------------------- |
 | Amazon S3           | Stores website files       |
 | AWS Lambda          | Processes S3 events        |
-| Amazon EC2          | Hosts the website          |
+| Amazon EC2          | Hosts website              |
 | AWS Systems Manager | Executes commands on EC2   |
-| IAM                 | Provides permissions       |
+| IAM                 | Provides AWS permissions   |
 | Nginx               | Web server                 |
-| CloudWatch          | Lambda logs and monitoring |
+| CloudWatch          | Monitoring and Lambda logs |
+| GitHub              | Source-code repository     |
 
 ---
 
@@ -71,7 +151,10 @@ s3-lambda-ec2-nginx/
 │
 ├── README.md
 │
-└── index.html
+├── index.html
+│
+└── images/
+    └── architecture.png
 ```
 
 ---
@@ -81,12 +164,14 @@ s3-lambda-ec2-nginx/
 Before starting, make sure you have:
 
 * AWS Account
-* AWS CLI installed
+* AWS CLI
+* GitHub Account
+* GitHub Repository
 * EC2 instance
 * Nginx installed on EC2
 * S3 bucket
 * IAM permissions
-* SSM Agent installed/running on EC2
+* SSM Agent installed/running
 * Python Lambda runtime
 
 ---
@@ -119,7 +204,14 @@ s3://my-nginx-website/index.html
 
 Launch an EC2 instance.
 
-Install Nginx:
+For Ubuntu:
+
+```bash
+sudo apt update
+sudo apt install nginx -y
+```
+
+For Amazon Linux:
 
 ```bash
 sudo yum update -y
@@ -132,7 +224,7 @@ Start Nginx:
 sudo systemctl start nginx
 ```
 
-Enable Nginx at boot:
+Enable Nginx:
 
 ```bash
 sudo systemctl enable nginx
@@ -152,12 +244,58 @@ Active: active (running)
 
 ---
 
-# 3️⃣ Check SSM Agent
+# 3️⃣ Configure Nginx
 
-Check whether the SSM Agent is running:
+The website directory should be:
+
+```text
+/usr/share/nginx/html/
+```
+
+Check:
+
+```bash
+ls -la /usr/share/nginx/html/
+```
+
+Test:
+
+```bash
+curl http://localhost
+```
+
+---
+
+# 4️⃣ Install and Configure SSM Agent
+
+Check SSM Agent:
 
 ```bash
 sudo systemctl status amazon-ssm-agent
+```
+
+For Ubuntu systems using Snap:
+
+```bash
+sudo snap install amazon-ssm-agent --classic
+```
+
+Enable:
+
+```bash
+sudo systemctl enable snap.amazon-ssm-agent.amazon-ssm-agent.service
+```
+
+Start:
+
+```bash
+sudo systemctl start snap.amazon-ssm-agent.amazon-ssm-agent.service
+```
+
+Check:
+
+```bash
+sudo systemctl status snap.amazon-ssm-agent.amazon-ssm-agent.service
 ```
 
 Expected:
@@ -166,35 +304,44 @@ Expected:
 Active: active (running)
 ```
 
-SSM allows Lambda to execute commands on the EC2 instance without requiring SSH.
-
 ---
 
-# 4️⃣ Create EC2 IAM Role
+# 5️⃣ EC2 IAM Role
 
-Create an IAM role for the EC2 instance.
+Create an IAM role for EC2.
 
-Attach:
+Attach the AWS managed policy:
 
 ```text
 AmazonSSMManagedInstanceCore
 ```
 
-This allows the EC2 instance to communicate with AWS Systems Manager.
+This allows EC2 to communicate with AWS Systems Manager.
+
+The flow is:
+
+```text
+EC2
+ ↓
+SSM Agent
+ ↓
+AWS Systems Manager
+```
 
 ---
 
-# 5️⃣ Give EC2 S3 Permission
+# 6️⃣ EC2 S3 Read Permission
 
-The EC2 instance needs permission to download `index.html` from S3.
+The EC2 instance needs permission to download the website from S3.
 
-Attach an inline policy to the EC2 role:
+Attach this inline policy to the **EC2 IAM role**:
 
 ```json
 {
     "Version": "2012-10-17",
     "Statement": [
         {
+            "Sid": "ReadWebsiteFile",
             "Effect": "Allow",
             "Action": [
                 "s3:GetObject"
@@ -205,15 +352,17 @@ Attach an inline policy to the EC2 role:
 }
 ```
 
-Now EC2 can execute:
+This allows:
 
 ```bash
 aws s3 cp s3://my-nginx-website/index.html /tmp/index.html
 ```
 
+but does not give the EC2 instance permission to modify the S3 object.
+
 ---
 
-# 6️⃣ Test S3 Access From EC2
+# 7️⃣ Test S3 Access From EC2
 
 Run:
 
@@ -227,28 +376,33 @@ Check:
 cat /tmp/index.html
 ```
 
-If the file is downloaded successfully, S3 permissions are working.
+If successful:
+
+```text
+S3 → EC2
+```
+
+is working.
 
 ---
 
-# 7️⃣ Create Lambda IAM Role
+# 8️⃣ Create Lambda IAM Role
 
-Go to:
+Create:
 
 ```text
-AWS Console
-→ IAM
-→ Roles
-→ Create Role
+lambda-s3-to-ec2-role
 ```
 
-Select:
+Trusted entity:
 
 ```text
-Trusted entity:
 AWS Service
+```
 
 Use case:
+
+```text
 Lambda
 ```
 
@@ -258,15 +412,11 @@ Attach:
 AWSLambdaBasicExecutionRole
 ```
 
-Create the role:
-
-```text
-lambda-s3-to-ec2-role
-```
+This provides CloudWatch Logs permissions.
 
 ---
 
-# 8️⃣ Add SSM Permission to Lambda
+# 9️⃣ Lambda SSM Permission
 
 Add an inline policy to the Lambda role:
 
@@ -275,6 +425,7 @@ Add an inline policy to the Lambda role:
     "Version": "2012-10-17",
     "Statement": [
         {
+            "Sid": "SendCommandToEC2",
             "Effect": "Allow",
             "Action": [
                 "ssm:SendCommand"
@@ -285,35 +436,84 @@ Add an inline policy to the Lambda role:
 }
 ```
 
-The important permission is:
+For monitoring command execution, you can also add:
 
-```text
-ssm:SendCommand
+```json
+"ssm:GetCommandInvocation"
 ```
 
-This allows:
+Example:
 
-```text
-Lambda
-   │
-   │ SendCommand
-   ▼
-SSM
-   │
-   ▼
-EC2
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "SSMCommands",
+            "Effect": "Allow",
+            "Action": [
+                "ssm:SendCommand",
+                "ssm:GetCommandInvocation"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
 ```
 
 ---
 
-# 9️⃣ Create Lambda Function
+# 🔟 IAM Permission Summary
+
+There are **two important IAM roles** in this architecture.
+
+## EC2 IAM Role
+
+```text
+EC2 IAM Role
+│
+├── AmazonSSMManagedInstanceCore
+│
+└── s3:GetObject
+       │
+       └── my-nginx-website/index.html
+```
+
+Purpose:
+
+```text
+EC2 → S3
+EC2 → SSM
+```
+
+---
+
+## Lambda IAM Role
+
+```text
+Lambda IAM Role
+│
+├── AWSLambdaBasicExecutionRole
+│
+└── ssm:SendCommand
+```
+
+Purpose:
+
+```text
+Lambda → SSM → EC2
+```
+
+---
+
+# 1️⃣1️⃣ Create Lambda Function
 
 Go to:
 
 ```text
 AWS Console
 → Lambda
-→ Create function
+→ Create Function
 ```
 
 Select:
@@ -346,18 +546,16 @@ Choose:
 lambda-s3-to-ec2-role
 ```
 
-Create the function.
-
 ---
 
-# 🔟 Lambda Function Code
+# 1️⃣2️⃣ Lambda Function Code
 
-Replace the Lambda code with:
+Use:
 
 ```python
 import boto3
 
-ssm = boto3.client("ssm")
+ssm = boto3.client("ssm", region_name="us-east-1")
 
 INSTANCE_ID = "i-xxxxxxxxxxxxxxxxx"
 BUCKET = "my-nginx-website"
@@ -368,8 +566,7 @@ def lambda_handler(event, context):
 
     commands = [
         f"aws s3 cp s3://{BUCKET}/{KEY} /tmp/index.html",
-        "sudo cp /tmp/index.html /usr/share/nginx/html/index.html",
-        "sudo systemctl reload nginx"
+        "sudo cp /tmp/index.html /usr/share/nginx/html/index.html"
     ]
 
     response = ssm.send_command(
@@ -386,14 +583,12 @@ def lambda_handler(event, context):
 
     return {
         "statusCode": 200,
-        "message": "index.html updated successfully",
+        "message": "Website deployment started",
         "command_id": command_id
     }
 ```
 
----
-
-# ⚠️ Important
+### Important
 
 Change:
 
@@ -401,7 +596,7 @@ Change:
 INSTANCE_ID = "i-xxxxxxxxxxxxxxxxx"
 ```
 
-to your actual EC2 instance ID.
+to your real EC2 instance ID.
 
 Example:
 
@@ -409,9 +604,9 @@ Example:
 INSTANCE_ID = "i-0123456789abcdef0"
 ```
 
-Do **not** use an AMI ID.
+Do not use an AMI ID.
 
-❌ Incorrect:
+❌ Wrong:
 
 ```text
 ami-0123456789abcdef0
@@ -425,7 +620,7 @@ i-0123456789abcdef0
 
 ---
 
-# 1️⃣1️⃣ Test Lambda
+# 1️⃣3️⃣ Test Lambda
 
 Click:
 
@@ -439,7 +634,7 @@ Then:
 Test
 ```
 
-Create a test event:
+Create test event:
 
 ```json
 {
@@ -449,37 +644,49 @@ Create a test event:
 
 Run the test.
 
-Lambda will execute:
+Expected response:
 
-```bash
-aws s3 cp s3://my-nginx-website/index.html /tmp/index.html
-```
-
-Then:
-
-```bash
-sudo cp /tmp/index.html /usr/share/nginx/html/index.html
-```
-
-Then:
-
-```bash
-sudo systemctl reload nginx
+```json
+{
+    "statusCode": 200,
+    "message": "Website deployment started",
+    "command_id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+}
 ```
 
 ---
 
-# 1️⃣2️⃣ Verify EC2
+# 1️⃣4️⃣ Verify SSM Command
 
-Connect to EC2 using SSH or SSM.
+Use:
+
+```bash
+aws ssm get-command-invocation \
+    --command-id "COMMAND_ID" \
+    --instance-id "INSTANCE_ID"
+```
 
 Check:
+
+```text
+Status
+```
+
+Expected:
+
+```text
+Success
+```
+
+---
+
+# 1️⃣5️⃣ Verify Website on EC2
+
+Check the file:
 
 ```bash
 cat /usr/share/nginx/html/index.html
 ```
-
-The file should contain the same content as the S3 `index.html`.
 
 Test Nginx:
 
@@ -489,7 +696,7 @@ curl http://localhost
 
 ---
 
-# 1️⃣3️⃣ Configure S3 → Lambda Trigger
+# 1️⃣6️⃣ Configure S3 → Lambda Trigger
 
 Go to:
 
@@ -507,222 +714,542 @@ Source:
 S3
 ```
 
-Choose your bucket:
+Bucket:
 
 ```text
 my-nginx-website
 ```
 
-Event type:
+Event:
 
 ```text
 All object create events
 ```
 
-Configure the trigger so it applies only to:
-
-```text
-index.html
-```
-
-If using a suffix filter:
+Use a suffix filter:
 
 ```text
 .html
 ```
 
-Click:
+For this project, the expected object is:
 
 ```text
-Add
+index.html
+```
+
+Now the flow becomes:
+
+```text
+S3 ObjectCreated
+       ↓
+Lambda
+       ↓
+SSM
+       ↓
+EC2
+       ↓
+Nginx
 ```
 
 ---
 
-# 1️⃣4️⃣ Test Automatic Deployment
+# 1️⃣7️⃣ GitHub Integration
 
-Modify your local `index.html`.
+GitHub can be used as the **source-code repository** for the website.
 
-For example:
+Example repository:
 
-```html
-<h1>Welcome to My Music Website</h1>
+```text
+s3-lambda-ec2-nginx
 ```
 
-Upload it:
+Repository:
+
+```text
+README.md
+index.html
+images/
+```
+
+Developer workflow:
+
+```text
+Developer
+    ↓
+GitHub
+    ↓
+index.html
+    ↓
+S3
+    ↓
+Lambda
+    ↓
+SSM
+    ↓
+EC2
+    ↓
+Nginx
+```
+
+---
+
+# 🔐 GitHub Repository Permissions
+
+GitHub repository permissions are **separate from AWS IAM**.
+
+For a GitHub repository, typical access levels are:
+
+```text
+Read
+Triage
+Write
+Maintain
+Admin
+```
+
+## Read Access
+
+If someone only needs to view/clone the project:
+
+```text
+Repository
+→ Settings
+→ Collaborators
+→ Add people
+→ Select Read
+```
+
+Read access allows users to:
+
+* View the repository
+* Clone the repository
+* Download files
+* Read README
+* Review source code
+
+It does not normally allow them to push changes.
+
+---
+
+# ✏️ GitHub Write Access
+
+If a developer needs to modify:
+
+```text
+index.html
+README.md
+```
+
+and push changes:
+
+```text
+Repository
+→ Settings
+→ Collaborators
+→ Add people
+→ Write
+```
+
+Write access allows the user to contribute changes to the repository.
+
+---
+
+# 🔑 GitHub Actions AWS Permissions
+
+If GitHub Actions will later upload `index.html` to S3 automatically, do **not** store an AWS access key directly inside the repository.
+
+Recommended architecture:
+
+```text
+GitHub
+   ↓
+GitHub Actions
+   ↓
+AWS IAM / OIDC
+   ↓
+S3
+   ↓
+Lambda
+   ↓
+SSM
+   ↓
+EC2
+```
+
+Use **GitHub Actions OIDC** to authenticate GitHub with AWS without storing long-lived AWS access keys.
+
+The GitHub Actions IAM role can have a restricted policy such as:
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "UploadWebsite",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject"
+            ],
+            "Resource": "arn:aws:s3:::my-nginx-website/index.html"
+        }
+    ]
+}
+```
+
+Then GitHub Actions can upload:
 
 ```bash
 aws s3 cp index.html s3://my-nginx-website/index.html
 ```
 
-The workflow starts automatically:
+This automatically triggers:
 
 ```text
-S3 Upload
+GitHub
    ↓
-ObjectCreated Event
+GitHub Actions
    ↓
-Lambda Triggered
+S3
    ↓
+S3 Event
+   ↓
+Lambda
+   ↓
+SSM
+   ↓
+EC2
+   ↓
+Nginx
+```
+
+---
+
+# 1️⃣8️⃣ GitHub Actions Example
+
+Create:
+
+```text
+.github/workflows/deploy.yml
+```
+
+Example:
+
+```yaml
+name: Deploy Website
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Upload Website
+        run: |
+          aws s3 cp index.html s3://my-nginx-website/index.html
+
+      - name: Deployment Complete
+        run: |
+          echo "Website uploaded to S3"
+          echo "S3 Event will trigger Lambda automatically"
+```
+
+The important GitHub permission is:
+
+```yaml
+permissions:
+  id-token: write
+  contents: read
+```
+
+`contents: read` allows GitHub Actions to read the repository.
+
+`id-token: write` allows GitHub Actions to request an OIDC token for AWS authentication.
+
+---
+
+# 1️⃣9️⃣ Test Automatic Deployment
+
+Modify:
+
+```text
+index.html
+```
+
+Commit:
+
+```bash
+git add index.html
+git commit -m "Update website"
+git push origin main
+```
+
+GitHub Actions uploads the file:
+
+```text
+GitHub
+   ↓
+GitHub Actions
+   ↓
+S3
+```
+
+S3 generates:
+
+```text
+ObjectCreated
+```
+
+Lambda is triggered:
+
+```text
+S3
+ ↓
+Lambda
+```
+
+Lambda sends:
+
+```text
 SSM SendCommand
-   ↓
-EC2 Downloads index.html
-   ↓
-File copied to Nginx
-   ↓
-Nginx Reloaded
-   ↓
-Website Updated
 ```
 
----
-
-# 1️⃣5️⃣ Verify the Website
-
-Find the public IP of the EC2 instance:
-
-```bash
-curl http://<EC2-PUBLIC-IP>
-```
-
-Or open:
-
-```text
-http://<EC2-PUBLIC-IP>
-```
-
-You should see the updated website.
-
----
-
-
-
-### Check website files
-
-```bash
-ls -l /usr/share/nginx/html/
-```
-
-### Check index.html
-
-```bash
-cat /usr/share/nginx/html/index.html
-```
-
-### Test website locally
-
-```bash
-curl http://localhost
-```
-
-### Test S3 download
+SSM executes on EC2:
 
 ```bash
 aws s3 cp s3://my-nginx-website/index.html /tmp/index.html
+```
+
+Then:
+
+```bash
+sudo cp /tmp/index.html /usr/share/nginx/html/index.html
+```
+
+Finally:
+
+```text
+EC2
+ ↓
+Nginx
+ ↓
+Live Website
+```
+
+---
+
+# 📊 Complete Deployment Flow
+
+```text
+┌───────────────┐
+│   Developer   │
+└───────┬───────┘
+        │
+        │ git push
+        ▼
+┌───────────────┐
+│    GitHub     │
+└───────┬───────┘
+        │
+        │ GitHub Actions
+        ▼
+┌───────────────┐
+│      S3       │
+│  index.html   │
+└───────┬───────┘
+        │
+        │ ObjectCreated
+        ▼
+┌───────────────┐
+│    Lambda     │
+└───────┬───────┘
+        │
+        │ SendCommand
+        ▼
+┌───────────────┐
+│      SSM      │
+└───────┬───────┘
+        │
+        │ RunShellScript
+        ▼
+┌───────────────┐
+│      EC2      │
+│  SSM Agent    │
+└───────┬───────┘
+        │
+        │ Copy index.html
+        ▼
+┌─────────────────────────┐
+│ /usr/share/nginx/html/  │
+│       index.html        │
+└───────────┬─────────────┘
+            │
+            ▼
+      ┌───────────┐
+      │   Nginx   │
+      └─────┬─────┘
+            │
+            ▼
+       🌐 Website
+```
+
+---
+
+# 🔐 IAM Architecture
+
+```text
+                    AWS IAM
+                       │
+          ┌────────────┼─────────────┐
+          │            │             │
+          ▼            ▼             ▼
+       GitHub         Lambda        EC2
+       Role            Role          Role
+          │            │             │
+          │            │             ├── SSM
+          │            │             │
+          │            │             └── S3 GetObject
+          │            │
+          │            └── SSM SendCommand
+          │
+          └── S3 PutObject
+```
+
+### GitHub Role
+
+```text
+s3:PutObject
+```
+
+### Lambda Role
+
+```text
+ssm:SendCommand
+ssm:GetCommandInvocation
+CloudWatch Logs
+```
+
+### EC2 Role
+
+```text
+AmazonSSMManagedInstanceCore
+s3:GetObject
+```
+
+---
+
+# 🔍 Monitoring
+
+Lambda logs:
+
+```text
+AWS Console
+→ CloudWatch
+→ Log groups
+→ /aws/lambda/s3-index-html-update
+```
+
+Check SSM commands:
+
+```bash
+aws ssm list-command-invocations \
+    --details \
+    --output table
+```
+
+Check EC2:
+
+```bash
+sudo systemctl status nginx
+```
+
+Check website:
+
+```bash
+curl http://localhost
 ```
 
 ---
 
 # 🔐 Security Improvements
 
-For a production environment, avoid using:
+For production:
 
-```json
-"Resource": "*"
-```
-
-for SSM permissions.
-
-Restrict Lambda permissions to the required:
-
-* EC2 instance
-* SSM document
-* S3 bucket/object
-
-Also consider:
-
-* S3 Block Public Access
-* IAM least privilege
-* CloudWatch monitoring
-* CloudTrail
-* S3 versioning
-* HTTPS with SSL/TLS
-* Route 53 custom domain
-* Application Load Balancer
-* Automatic rollback/versioning
-
----
-
-# 📊 Monitoring
-
-Lambda execution logs are available in:
-
-```text
-CloudWatch
-→ Log groups
-→ /aws/lambda/s3-index-html-update
-```
-
-You can monitor:
-
-```text
-Lambda Invocations
-Lambda Errors
-Lambda Duration
-SSM Command Status
-EC2 Status
-Nginx Status
-```
+* Use IAM least privilege
+* Restrict S3 `GetObject` to the required object
+* Restrict GitHub Actions to `s3:PutObject`
+* Use GitHub OIDC instead of AWS access keys
+* Enable S3 Block Public Access
+* Enable S3 versioning
+* Enable CloudTrail
+* Monitor Lambda errors
+* Use HTTPS
+* Use Route 53 custom domain
+* Use CloudFront for public websites
+* Consider rollback using S3 object versions
+* Avoid `Resource: "*"` where resource-level restrictions are supported
 
 ---
 
 # 🎯 Final Result
 
-The project provides a simple CI/CD-style deployment mechanism:
+The project provides an automated deployment pipeline:
 
 ```text
-             ┌──────────────┐
-             │   Developer  │
-             └──────┬───────┘
-                    │
-               Upload HTML
-                    │
-                    ▼
-             ┌──────────────┐
-             │      S3      │
-             └──────┬───────┘
-                    │
-             S3 Event Trigger
-                    │
-                    ▼
-             ┌──────────────┐
-             │    Lambda    │
-             └──────┬───────┘
-                    │
-              SSM SendCommand
-                    │
-                    ▼
-             ┌──────────────┐
-             │     EC2      │
-             └──────┬───────┘
-                    │
-             Download from S3
-                    │
-                    ▼
-       /usr/share/nginx/html/
-                    │
-                    ▼
-             ┌──────────────┐
-             │    Nginx     │
-             └──────┬───────┘
-                    │
-                    ▼
-             🌐 Live Website
+GitHub
+   ↓
+GitHub Actions
+   ↓
+S3
+   ↓
+S3 Event
+   ↓
+Lambda
+   ↓
+AWS SSM
+   ↓
+EC2
+   ↓
+Nginx
+   ↓
+🌐 Live Website
 ```
 
-## 🏆 Technologies
+A developer only needs to:
+
+```bash
+git add .
+git commit -m "Update website"
+git push origin main
+```
+
+The website deployment then happens automatically.
+
+---
+
+# 🏆 Technologies
 
 ```text
+GitHub
+GitHub Actions
 AWS S3
 AWS Lambda
 AWS EC2
@@ -734,9 +1261,3 @@ Python
 HTML
 CSS
 ```
-
----
-
-
-
-
