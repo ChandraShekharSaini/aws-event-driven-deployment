@@ -41,12 +41,12 @@ jobs:
 
       - name: Check S3 Access
         run: |
-          aws s3 ls s3://my-nginx-website-890123
+          aws s3 ls "s3://${{ secrets.S3_BUCKET_NAME }}"
 
       - name: Upload Website
         run: |
           aws s3 cp website/index.html \
-            s3://my-nginx-website-890123/index.html \
+            "s3://${{ secrets.S3_BUCKET_NAME }}/index.html" \
             --content-type text/html
 
           echo "Website uploaded successfully!"
@@ -54,7 +54,7 @@ jobs:
       - name: Verify Upload
         run: |
           aws s3api head-object \
-            --bucket my-nginx-website-890123 \
+            --bucket "${{ secrets.S3_BUCKET_NAME }}" \
             --key index.html
 
           echo "index.html exists in S3"
