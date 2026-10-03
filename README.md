@@ -34,54 +34,9 @@ This eliminates manual deployment and provides a simple **event-driven CI/CD-sty
 
 # 🏗️ Architecture
 
-```text
-                  ┌─────────────────┐
-                  │    Developer    │
-                  └────────┬────────┘
-                           │
-                           ▼
-                  ┌─────────────────┐
-                  │     GitHub      │
-                  │  Source Code    │
-                  └────────┬────────┘
-                           │
-                       Upload/Sync
-                           │
-                           ▼
-                  ┌─────────────────┐
-                  │       S3        │
-                  │   index.html    │
-                  └────────┬────────┘
-                           │
-                   ObjectCreated Event
-                           │
-                           ▼
-                  ┌─────────────────┐
-                  │     Lambda      │
-                  │   Python/Boto3  │
-                  └────────┬────────┘
-                           │
-                    SSM SendCommand
-                           │
-                           ▼
-                  ┌─────────────────┐
-                  │       EC2       │
-                  │   SSM Agent     │
-                  └────────┬────────┘
-                           │
-                    aws s3 cp
-                           │
-                           ▼
-             /usr/share/nginx/html/index.html
-                           │
-                           ▼
-                  ┌─────────────────┐
-                  │      Nginx      │
-                  └────────┬────────┘
-                           │
-                           ▼
-                     🌐 Website
-```
+
+
+![AWS Event-Driven Deployment Architecture](images/architecture.png)
 
 ---
 
