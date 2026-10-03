@@ -1,22 +1,22 @@
+
 name: Deploy Website
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 permissions:
   contents: read
   id-token: write
 
 jobs:
-
   deploy:
     name: Deploy Website to S3
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout Repository
         uses: actions/checkout@v4
 
@@ -25,6 +25,10 @@ jobs:
         with:
           role-to-assume: ${{ vars.AWS_ROLE_ARN }}
           aws-region: us-east-1
+          audience: sts.amazonaws.com
+
+      - name: Verify AWS Identity
+        run: aws sts get-caller-identity
 
       - name: Upload index.html
         run: |
@@ -35,5 +39,5 @@ jobs:
       - name: Deployment Started
         run: |
           echo "index.html uploaded to S3"
-          echo "S3 ObjectCreated event will trigger Lambda"
-          echo "Lambda will deploy the file to EC2"
+          echo "S3 ObjectCreated event should trigger Lambda"
+
