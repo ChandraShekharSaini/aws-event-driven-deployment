@@ -1,64 +1,4 @@
 
-# name: Deploy Website
-
-# on:
-#   push:
-#     branches:
-#       - main
-
-#   workflow_dispatch:
-
-# permissions:
-#   contents: read
-
-# jobs:
-#   deploy:
-#     name: Deploy Website to S3
-#     runs-on: ubuntu-latest
-
-#     steps:
-
-#       - name: Checkout Repository
-#         uses: actions/checkout@v4
-
-#       - name: Check GitHub Information
-#         run: |
-#           echo "Repository: $GITHUB_REPOSITORY"
-#           echo "Branch/Ref: $GITHUB_REF"
-#           echo "Event: $GITHUB_EVENT_NAME"
-
-#       - name: Configure AWS Credentials
-#         uses: aws-actions/configure-aws-credentials@v5
-#         with:
-#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#           aws-region: us-east-1
-
-#       - name: Verify AWS Identity
-#         run: |
-#           echo "AWS authentication successful!"
-#           aws sts get-caller-identity
-
-#       - name: Check S3 Access
-#         run: |
-#           aws s3 ls s3://my-nginx-website-890123
-
-#       - name: Upload Website
-#         run: |
-#           aws s3 cp website/index.html \
-#             s3://my-nginx-website-890123/index.html \
-#             --content-type text/html
-
-#           echo "Website uploaded successfully!"
-
-#       - name: Verify Upload
-#         run: |
-#           aws s3api head-object \
-#             --bucket my-nginx-website-890123 \
-#             --key index.html
-
-#           echo "index.html exists in S3"
-
 name: Deploy Website
 
 on:
@@ -70,7 +10,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   deploy:
@@ -91,13 +30,13 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v5
         with:
-          role-to-assume: arn:aws:iam::032068930648:role/ec2-github-access
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-          audience: sts.amazonaws.com
 
       - name: Verify AWS Identity
         run: |
-          echo "AWS OIDC authentication successful!"
+          echo "AWS authentication successful!"
           aws sts get-caller-identity
 
       - name: Check S3 Access
@@ -119,3 +58,64 @@ jobs:
             --key index.html
 
           echo "index.html exists in S3"
+
+# name: Deploy Website
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+#   workflow_dispatch:
+
+# permissions:
+#   contents: read
+#   id-token: write
+
+# jobs:
+#   deploy:
+#     name: Deploy Website to S3
+#     runs-on: ubuntu-latest
+
+#     steps:
+
+#       - name: Checkout Repository
+#         uses: actions/checkout@v4
+
+#       - name: Check GitHub Information
+#         run: |
+#           echo "Repository: $GITHUB_REPOSITORY"
+#           echo "Branch/Ref: $GITHUB_REF"
+#           echo "Event: $GITHUB_EVENT_NAME"
+
+#       - name: Configure AWS Credentials
+#         uses: aws-actions/configure-aws-credentials@v5
+#         with:
+#           role-to-assume: arn:aws:iam::032068930648:role/ec2-github-access
+#           aws-region: us-east-1
+#           audience: sts.amazonaws.com
+
+#       - name: Verify AWS Identity
+#         run: |
+#           echo "AWS OIDC authentication successful!"
+#           aws sts get-caller-identity
+
+#       - name: Check S3 Access
+#         run: |
+#           aws s3 ls s3://my-nginx-website-890123
+
+#       - name: Upload Website
+#         run: |
+#           aws s3 cp website/index.html \
+#             s3://my-nginx-website-890123/index.html \
+#             --content-type text/html
+
+#           echo "Website uploaded successfully!"
+
+#       - name: Verify Upload
+#         run: |
+#           aws s3api head-object \
+#             --bucket my-nginx-website-890123 \
+#             --key index.html
+
+#           echo "index.html exists in S3"

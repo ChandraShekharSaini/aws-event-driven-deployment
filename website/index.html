@@ -1,1406 +1,883 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>ShopNest - Online Store</title>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f6f7fb;
-            color: #172033;
-        }
-
-        /* ================= HEADER ================= */
-
-        header {
-            background: #ffffff;
-            border-bottom: 1px solid #e5e7eb;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .topbar {
-            max-width: 1200px;
-            margin: auto;
-            padding: 16px 20px;
-
-            display: flex;
-            align-items: center;
-            gap: 25px;
-        }
-
-        .logo {
-            font-size: 26px;
-            font-weight: 800;
-            color: #111827;
-            white-space: nowrap;
-        }
-
-        .logo span {
-            color: #2563eb;
-        }
-
-        .search {
-            flex: 1;
-            position: relative;
-        }
-
-        .search input {
-            width: 100%;
-            padding: 13px 45px 13px 18px;
-            border: 1px solid #d1d5db;
-            border-radius: 12px;
-            outline: none;
-            font-size: 14px;
-            background: #f9fafb;
-        }
-
-        .search input:focus {
-            border-color: #2563eb;
-            background: white;
-        }
-
-        .search-icon {
-            position: absolute;
-            right: 16px;
-            top: 11px;
-            font-size: 20px;
-        }
-
-        .actions {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-        }
-
-        .action {
-            position: relative;
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        .cart-count {
-            position: absolute;
-            top: -8px;
-            right: -10px;
-
-            background: #ef4444;
-            color: white;
-
-            width: 19px;
-            height: 19px;
-
-            border-radius: 50%;
-
-            font-size: 11px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* ================= NAV ================= */
-
-        .nav {
-            max-width: 1200px;
-            margin: auto;
-
-            padding: 0 20px 14px;
-
-            display: flex;
-            gap: 28px;
-
-            overflow-x: auto;
-        }
-
-        .nav a {
-            color: #4b5563;
-            text-decoration: none;
-            font-size: 14px;
-            white-space: nowrap;
-        }
-
-        .nav a:hover {
-            color: #2563eb;
-        }
-
-        /* ================= HERO ================= */
-
-        .hero {
-            max-width: 1200px;
-            margin: 30px auto;
-
-            padding: 0 20px;
-        }
-
-        .hero-box {
-            background: linear-gradient(
-                135deg,
-                #1d4ed8,
-                #7c3aed
-            );
-
-            color: white;
-
-            border-radius: 25px;
-
-            padding: 60px;
-
-            min-height: 340px;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            overflow: hidden;
-        }
-
-        .hero-content {
-            max-width: 550px;
-        }
-
-        .hero-content small {
-            color: #dbeafe;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-
-        .hero-content h1 {
-            font-size: 48px;
-            line-height: 1.1;
-            margin: 15px 0;
-        }
-
-        .hero-content p {
-            color: #e0e7ff;
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
-
-        .shop-btn {
-            display: inline-block;
-            background: white;
-            color: #1d4ed8;
-
-            padding: 14px 25px;
-
-            border-radius: 10px;
-
-            text-decoration: none;
-
-            font-weight: bold;
-        }
-
-        .hero-product {
-            font-size: 160px;
-            transform: rotate(-8deg);
-        }
-
-        /* ================= CATEGORIES ================= */
-
-        .section {
-            max-width: 1200px;
-            margin: 50px auto;
-            padding: 0 20px;
-        }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            margin-bottom: 25px;
-        }
-
-        .section-header h2 {
-            font-size: 28px;
-        }
-
-        .section-header a {
-            color: #2563eb;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        .categories {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 15px;
-        }
-
-        .category {
-            background: white;
-
-            border-radius: 16px;
-
-            padding: 20px 10px;
-
-            text-align: center;
-
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-
-            cursor: pointer;
-
-            transition: 0.2s;
-        }
-
-        .category:hover {
-            transform: translateY(-4px);
-        }
-
-        .category-icon {
-            font-size: 35px;
-            margin-bottom: 10px;
-        }
-
-        .category p {
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        /* ================= PRODUCTS ================= */
-
-        .products {
-            display: grid;
-
-            grid-template-columns:
-                repeat(4, 1fr);
-
-            gap: 22px;
-        }
-
-        .product {
-            background: white;
-
-            border-radius: 18px;
-
-            overflow: hidden;
-
-            box-shadow:
-                0 6px 25px rgba(0,0,0,0.06);
-
-            transition: 0.2s;
-
-            position: relative;
-        }
-
-        .product:hover {
-            transform: translateY(-5px);
-        }
-
-        .product-image {
-            height: 220px;
-
-            background: #f1f5f9;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            font-size: 90px;
-
-            position: relative;
-        }
-
-        .discount {
-            position: absolute;
-
-            top: 12px;
-            left: 12px;
-
-            background: #16a34a;
-
-            color: white;
-
-            padding: 5px 8px;
-
-            border-radius: 6px;
-
-            font-size: 11px;
-
-            font-weight: bold;
-        }
-
-        .wishlist {
-            position: absolute;
-
-            top: 12px;
-            right: 12px;
-
-            width: 35px;
-            height: 35px;
-
-            background: white;
-
-            border-radius: 50%;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            cursor: pointer;
-
-            box-shadow: 0 3px 10px rgba(0,0,0,.1);
-        }
-
-        .product-info {
-            padding: 18px;
-        }
-
-        .product-info h3 {
-            font-size: 16px;
-            margin-bottom: 8px;
-        }
-
-        .rating {
-            color: #f59e0b;
-            font-size: 13px;
-            margin-bottom: 10px;
-        }
-
-        .rating span {
-            color: #6b7280;
-        }
-
-        .price {
-            display: flex;
-            align-items: center;
-            gap: 9px;
-
-            margin-bottom: 15px;
-        }
-
-        .current-price {
-            font-size: 19px;
-            font-weight: bold;
-        }
-
-        .old-price {
-            font-size: 13px;
-            color: #9ca3af;
-            text-decoration: line-through;
-        }
-
-        .add-cart {
-            width: 100%;
-
-            padding: 11px;
-
-            border: none;
-
-            background: #2563eb;
-
-            color: white;
-
-            border-radius: 9px;
-
-            font-weight: bold;
-
-            cursor: pointer;
-        }
-
-        .add-cart:hover {
-            background: #1d4ed8;
-        }
-
-        /* ================= OFFER ================= */
-
-        .offer {
-            max-width: 1200px;
-
-            margin: 60px auto;
-
-            padding: 0 20px;
-        }
-
-        .offer-box {
-            background: #111827;
-
-            color: white;
-
-            border-radius: 22px;
-
-            padding: 40px;
-
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
-        }
-
-        .offer-box h2 {
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-
-        .offer-box p {
-            color: #cbd5e1;
-        }
-
-        .offer-btn {
-            background: #2563eb;
-
-            color: white;
-
-            padding: 13px 22px;
-
-            border-radius: 9px;
-
-            text-decoration: none;
-
-            font-weight: bold;
-
-            white-space: nowrap;
-        }
-
-        /* ================= FOOTER ================= */
-
-        footer {
-            background: #020617;
-
-            color: #94a3b8;
-
-            padding: 45px 20px;
-
-            margin-top: 60px;
-        }
-
-        .footer-grid {
-            max-width: 1200px;
-
-            margin: auto;
-
-            display: grid;
-
-            grid-template-columns:
-                2fr 1fr 1fr 1fr;
-
-            gap: 35px;
-        }
-
-        .footer-logo {
-            color: white;
-
-            font-size: 24px;
-
-            font-weight: bold;
-
-            margin-bottom: 15px;
-        }
-
-        .footer-logo span {
-            color: #60a5fa;
-        }
-
-        footer h4 {
-            color: white;
-            margin-bottom: 15px;
-        }
-
-        footer a {
-            display: block;
-
-            color: #94a3b8;
-
-            text-decoration: none;
-
-            font-size: 14px;
-
-            margin-bottom: 10px;
-        }
-
-        footer p {
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .copyright {
-            max-width: 1200px;
-
-            margin: 35px auto 0;
-
-            padding-top: 20px;
-
-            border-top: 1px solid #1e293b;
-
-            text-align: center;
-
-            font-size: 13px;
-        }
-
-        /* ================= MOBILE ================= */
-
-        @media (max-width: 900px) {
-
-            .products {
-                grid-template-columns:
-                    repeat(2, 1fr);
-            }
-
-            .categories {
-                grid-template-columns:
-                    repeat(3, 1fr);
-            }
-
-            .hero-content h1 {
-                font-size: 40px;
-            }
-
-            .hero-product {
-                font-size: 110px;
-            }
-
-            .footer-grid {
-                grid-template-columns:
-                    repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 600px) {
-
-            .topbar {
-                padding: 13px 15px;
-
-                gap: 12px;
-
-                flex-wrap: wrap;
-            }
-
-            .logo {
-                font-size: 22px;
-            }
-
-            .search {
-                order: 3;
-                flex-basis: 100%;
-            }
-
-            .actions {
-                margin-left: auto;
-            }
-
-            .nav {
-                padding-left: 15px;
-            }
-
-            .hero {
-                margin-top: 15px;
-            }
-
-            .hero-box {
-                padding: 35px 25px;
-
-                min-height: 450px;
-
-                text-align: center;
-
-                justify-content: center;
-            }
-
-            .hero-content h1 {
-                font-size: 36px;
-            }
-
-            .hero-product {
-                display: none;
-            }
-
-            .categories {
-                grid-template-columns:
-                    repeat(3, 1fr);
-
-                gap: 10px;
-            }
-
-            .category {
-                padding: 15px 5px;
-            }
-
-            .category-icon {
-                font-size: 28px;
-            }
-
-            .products {
-                grid-template-columns:
-                    repeat(2, 1fr);
-
-                gap: 12px;
-            }
-
-            .product-image {
-                height: 160px;
-                font-size: 65px;
-            }
-
-            .product-info {
-                padding: 12px;
-            }
-
-            .product-info h3 {
-                font-size: 14px;
-            }
-
-            .current-price {
-                font-size: 16px;
-            }
-
-            .old-price {
-                font-size: 11px;
-            }
-
-            .offer-box {
-                flex-direction: column;
-
-                text-align: center;
-
-                gap: 25px;
-
-                padding: 35px 20px;
-            }
-
-            .offer-box h2 {
-                font-size: 26px;
-            }
-
-            .footer-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 380px) {
-
-            .products {
-                grid-template-columns: 1fr;
-            }
-
-            .product-image {
-                height: 220px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>ElectroHub | Electronics Store</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f5f7fb;
+      color: #172033;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #e8ebf1;
+      padding: 16px 7%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 25px;
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: 800;
+      color: #2563eb;
+      white-space: nowrap;
+    }
+
+    .logo span {
+      color: #111827;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #374151;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #2563eb;
+    }
+
+    .cart {
+      background: #111827;
+      color: white;
+      padding: 10px 17px;
+      border-radius: 25px;
+      font-weight: 600;
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 620px;
+      padding: 80px 7%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 50px;
+      background:
+        radial-gradient(circle at 85% 20%, rgba(59,130,246,.18), transparent 30%),
+        linear-gradient(135deg, #eef5ff, #ffffff);
+    }
+
+    .hero-content {
+      max-width: 650px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #dbeafe;
+      color: #1d4ed8;
+      padding: 9px 16px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: clamp(45px, 6vw, 76px);
+      line-height: 1.02;
+      margin-bottom: 25px;
+      letter-spacing: -3px;
+    }
+
+    .hero h1 span {
+      color: #2563eb;
+    }
+
+    .hero p {
+      color: #64748b;
+      font-size: 19px;
+      line-height: 1.7;
+      margin-bottom: 30px;
+      max-width: 570px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 15px 25px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: .3s;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+      box-shadow: 0 10px 25px rgba(37,99,235,.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      background: #1d4ed8;
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #111827;
+      border: 1px solid #dbe1ea;
+    }
+
+    .btn-secondary:hover {
+      background: #f8fafc;
+    }
+
+    .hero-product {
+      width: 430px;
+      height: 430px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #111827, #334155);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 35px 70px rgba(15,23,42,.22);
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .phone {
+      width: 190px;
+      height: 350px;
+      border: 8px solid #0f172a;
+      border-radius: 35px;
+      background: linear-gradient(145deg, #2563eb, #7c3aed);
+      box-shadow: 0 20px 50px rgba(0,0,0,.4);
+      transform: rotate(-8deg);
+      position: relative;
+    }
+
+    .phone::before {
+      content: "";
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 70px;
+      height: 18px;
+      background: #020617;
+      border-radius: 20px;
+    }
+
+    .phone::after {
+      content: "E";
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 100px;
+      font-weight: 900;
+      color: rgba(255,255,255,.9);
+    }
+
+    /* SECTION */
+    section {
+      padding: 80px 7%;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 45px;
+    }
+
+    .section-header h2 {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+
+    .section-header p {
+      color: #64748b;
+    }
+
+    /* CATEGORIES */
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 18px;
+    }
+
+    .category {
+      background: white;
+      border: 1px solid #e8ebf1;
+      border-radius: 16px;
+      padding: 25px 15px;
+      text-align: center;
+      transition: .3s;
+      cursor: pointer;
+    }
+
+    .category:hover {
+      transform: translateY(-7px);
+      box-shadow: 0 15px 30px rgba(15,23,42,.08);
+    }
+
+    .category-icon {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+
+    .category h3 {
+      font-size: 15px;
+    }
+
+    /* PRODUCTS */
+    .products {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 25px;
+    }
+
+    .product {
+      background: white;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid #e8ebf1;
+      transition: .3s;
+    }
+
+    .product:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(15,23,42,.1);
+    }
+
+    .product-image {
+      height: 230px;
+      background: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 90px;
+      position: relative;
+    }
+
+    .discount {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: #ef4444;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .product-info {
+      padding: 22px;
+    }
+
+    .product-info h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .rating {
+      color: #f59e0b;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    .price {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .current-price {
+      font-size: 23px;
+      font-weight: 800;
+    }
+
+    .old-price {
+      color: #94a3b8;
+      text-decoration: line-through;
+      font-size: 14px;
+    }
+
+    .add-cart {
+      width: 100%;
+      border: 0;
+      background: #111827;
+      color: white;
+      padding: 12px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: .3s;
+    }
+
+    .add-cart:hover {
+      background: #2563eb;
+    }
+
+    /* OFFER */
+    .offer {
+      margin: 0 7% 80px;
+      padding: 55px;
+      border-radius: 25px;
+      background: linear-gradient(120deg, #111827, #1e40af);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+    }
+
+    .offer h2 {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+
+    .offer p {
+      color: #cbd5e1;
+      line-height: 1.6;
+    }
+
+    .offer .btn {
+      background: white;
+      color: #111827;
+      white-space: nowrap;
+    }
+
+    /* FEATURES */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .feature {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      text-align: center;
+      border: 1px solid #e8ebf1;
+    }
+
+    .feature-icon {
+      font-size: 35px;
+      margin-bottom: 15px;
+    }
+
+    .feature h3 {
+      margin-bottom: 8px;
+    }
+
+    .feature p {
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* FOOTER */
+    footer {
+      background: #0f172a;
+      color: white;
+      padding: 55px 7% 25px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    footer h3 {
+      margin-bottom: 18px;
+    }
+
+    footer p {
+      color: #94a3b8;
+      line-height: 1.7;
+    }
+
+    footer ul {
+      list-style: none;
+    }
+
+    footer li {
+      margin-bottom: 10px;
+      color: #94a3b8;
+    }
+
+    footer a {
+      color: #94a3b8;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: white;
+    }
+
+    .copyright {
+      border-top: 1px solid #1e293b;
+      padding-top: 22px;
+      text-align: center;
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1000px) {
+      .hero-product {
+        width: 330px;
+        height: 330px;
+      }
+
+      .categories {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .products {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .features {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 750px) {
+      .navbar {
+        padding: 15px 5%;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        padding: 60px 5%;
+        text-align: center;
+        flex-direction: column;
+      }
+
+      .hero p {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .hero-buttons {
+        justify-content: center;
+      }
+
+      .hero-product {
+        width: 280px;
+        height: 280px;
+      }
+
+      .phone {
+        width: 130px;
+        height: 240px;
+      }
+
+      section {
+        padding: 60px 5%;
+      }
+
+      .categories {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .products {
+        grid-template-columns: 1fr;
+      }
+
+      .offer {
+        margin: 0 5% 60px;
+        padding: 35px 25px;
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .offer h2 {
+        font-size: 30px;
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 450px) {
+      .categories {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .category {
+        padding: 18px 8px;
+      }
+
+      .section-header h2 {
+        font-size: 30px;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="logo">Electro<span>Hub</span></div>
 
-<!-- ================= HEADER ================= -->
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#categories">Categories</a></li>
+      <li><a href="#products">Products</a></li>
+      <li><a href="#offers">Offers</a></li>
+    </ul>
 
-<header>
+    <div class="cart">🛒 Cart <span id="cartCount">0</span></div>
+  </header>
 
-    <div class="topbar">
+  <!-- HERO -->
+  <section class="hero" id="home">
 
-        <div class="logo">
-            Shop<span>Nest</span>
-        </div>
+    <div class="hero-content">
+      <span class="badge">🔥 New Season Collection</span>
 
-        <div class="search">
+      <h1>
+        Technology<br />
+        <span>Made Simple.</span>
+      </h1>
 
-            <input
-                type="text"
-                placeholder="Search products..."
-            >
+      <p>
+        Discover the latest smartphones, laptops, headphones,
+        smart watches and premium electronics at amazing prices.
+      </p>
 
-            <div class="search-icon">
-                🔍
-            </div>
-
-        </div>
-
-        <div class="actions">
-
-            <div class="action">
-                ♡
-            </div>
-
-            <div class="action">
-
-                🛒
-
-                <div class="cart-count">
-                    3
-                </div>
-
-            </div>
-
-        </div>
-
+      <div class="hero-buttons">
+        <a href="#products" class="btn btn-primary">Shop Electronics →</a>
+        <a href="#categories" class="btn btn-secondary">Explore Categories</a>
+      </div>
     </div>
 
-
-    <nav class="nav">
-
-        <a href="#">Home</a>
-
-        <a href="#categories">
-            Categories
-        </a>
-
-        <a href="#products">
-            Electronics
-        </a>
-
-        <a href="#products">
-            Fashion
-        </a>
-
-        <a href="#products">
-            Home & Living
-        </a>
-
-        <a href="#products">
-            Deals
-        </a>
-
-        <a href="#contact">
-            Contact
-        </a>
-
-    </nav>
-
-</header>
-
-
-<!-- ================= HERO ================= -->
-
-<section class="hero">
-
-    <div class="hero-box">
-
-        <div class="hero-content">
-
-            <small>
-                BIG SALE • UP TO 100% OFF
-            </small>
-
-            <h1>
-                Chandra You Love.
-                <br>
-                <span>One Place.</span>
-            </h1>
-
-            <p>
-                Discover trending products, amazing deals
-                and everyday essentials at prices you'll love.
-            </p>
-
-            <a href="#products" class="shop-btn">
-                Shop Now →
-            </a>
-
-        </div>
-
-
-        <div class="hero-product">
-            🛍️
-        </div>
-
+    <div class="hero-product">
+      <div class="phone"></div>
     </div>
 
-</section>
+  </section>
 
-
-<!-- ================= CATEGORIES ================= -->
-
-<section class="section" id="categories">
+  <!-- CATEGORIES -->
+  <section id="categories">
 
     <div class="section-header">
-
-        <h2>
-            Shop by Category
-        </h2>
-
-        <a href="#">
-            View All →
-        </a>
-
+      <h2>Shop by Category</h2>
+      <p>Everything you need in one place</p>
     </div>
-
 
     <div class="categories">
 
-        <div class="category">
-            <div class="category-icon">
-                📱
-            </div>
-            <p>Electronics</p>
-        </div>
+      <div class="category">
+        <div class="category-icon">📱</div>
+        <h3>Smartphones</h3>
+      </div>
 
-        <div class="category">
-            <div class="category-icon">
-                👕
-            </div>
-            <p>Fashion</p>
-        </div>
+      <div class="category">
+        <div class="category-icon">💻</div>
+        <h3>Laptops</h3>
+      </div>
 
-        <div class="category">
-            <div class="category-icon">
-                🏠
-            </div>
-            <p>Home</p>
-        </div>
+      <div class="category">
+        <div class="category-icon">🎧</div>
+        <h3>Headphones</h3>
+      </div>
 
-        <div class="category">
-            <div class="category-icon">
-                👟
-            </div>
-            <p>Footwear</p>
-        </div>
+      <div class="category">
+        <div class="category-icon">⌚</div>
+        <h3>Smart Watches</h3>
+      </div>
 
-        <div class="category">
-            <div class="category-icon">
-                🎧
-            </div>
-            <p>Accessories</p>
-        </div>
+      <div class="category">
+        <div class="category-icon">📷</div>
+        <h3>Cameras</h3>
+      </div>
 
-        <div class="category">
-            <div class="category-icon">
-                🎮
-            </div>
-            <p>Gaming</p>
-        </div>
+      <div class="category">
+        <div class="category-icon">🎮</div>
+        <h3>Gaming</h3>
+      </div>
 
     </div>
 
-</section>
+  </section>
 
-
-<!-- ================= PRODUCTS ================= -->
-
-<section class="section" id="products">
+  <!-- PRODUCTS -->
+  <section id="products">
 
     <div class="section-header">
-
-        <h2>
-            Trending Products
-        </h2>
-
-        <a href="#">
-            View All →
-        </a>
-
+      <h2>Featured Products</h2>
+      <p>Top electronics picked for you</p>
     </div>
-
 
     <div class="products">
 
-
-        <!-- Product 1 -->
-
-        <div class="product">
-
-            <div class="product-image">
-
-                <div class="discount">
-                    25% OFF
-                </div>
-
-                <div class="wishlist">
-                    ♡
-                </div>
-
-                📱
-
-            </div>
-
-            <div class="product-info">
-
-                <h3>
-                    Premium Smartphone
-                </h3>
-
-                <div class="rating">
-                    ★★★★★
-                    <span>(128)</span>
-                </div>
-
-                <div class="price">
-
-                    <span class="current-price">
-                        ₹24,999
-                    </span>
-
-                    <span class="old-price">
-                        ₹32,999
-                    </span>
-
-                </div>
-
-                <button class="add-cart">
-                    Add to Cart
-                </button>
-
-            </div>
-
+      <div class="product">
+        <div class="product-image">
+          <span class="discount">-20%</span>
+          📱
         </div>
 
+        <div class="product-info">
+          <h3>Pro Smartphone X</h3>
 
-        <!-- Product 2 -->
+          <div class="rating">
+            ★★★★★ <span>(128)</span>
+          </div>
 
-        <div class="product">
+          <div class="price">
+            <span class="current-price">₹49,999</span>
+            <span class="old-price">₹62,999</span>
+          </div>
 
-            <div class="product-image">
+          <button class="add-cart" onclick="addToCart()">
+            Add to Cart
+          </button>
+        </div>
+      </div>
 
-                <div class="discount">
-                    30% OFF
-                </div>
 
-                <div class="wishlist">
-                    ♡
-                </div>
-
-                🎧
-
-            </div>
-
-            <div class="product-info">
-
-                <h3>
-                    Wireless Headphones
-                </h3>
-
-                <div class="rating">
-                    ★★★★☆
-                    <span>(94)</span>
-                </div>
-
-                <div class="price">
-
-                    <span class="current-price">
-                        ₹2,499
-                    </span>
-
-                    <span class="old-price">
-                        ₹3,599
-                    </span>
-
-                </div>
-
-                <button class="add-cart">
-                    Add to Cart
-                </button>
-
-            </div>
-
+      <div class="product">
+        <div class="product-image">
+          <span class="discount">-15%</span>
+          💻
         </div>
 
+        <div class="product-info">
+          <h3>UltraBook Pro 15</h3>
 
-        <!-- Product 3 -->
+          <div class="rating">
+            ★★★★★ <span>(96)</span>
+          </div>
 
-        <div class="product">
+          <div class="price">
+            <span class="current-price">₹74,990</span>
+            <span class="old-price">₹88,000</span>
+          </div>
 
-            <div class="product-image">
+          <button class="add-cart" onclick="addToCart()">
+            Add to Cart
+          </button>
+        </div>
+      </div>
 
-                <div class="discount">
-                    20% OFF
-                </div>
 
-                <div class="wishlist">
-                    ♡
-                </div>
-
-                👟
-
-            </div>
-
-            <div class="product-info">
-
-                <h3>
-                    Running Shoes
-                </h3>
-
-                <div class="rating">
-                    ★★★★★
-                    <span>(76)</span>
-                </div>
-
-                <div class="price">
-
-                    <span class="current-price">
-                        ₹1,999
-                    </span>
-
-                    <span class="old-price">
-                        ₹2,499
-                    </span>
-
-                </div>
-
-                <button class="add-cart">
-                    Add to Cart
-                </button>
-
-            </div>
-
+      <div class="product">
+        <div class="product-image">
+          <span class="discount">-30%</span>
+          🎧
         </div>
 
+        <div class="product-info">
+          <h3>NoiseCancel Pro</h3>
 
-        <!-- Product 4 -->
+          <div class="rating">
+            ★★★★☆ <span>(214)</span>
+          </div>
 
-        <div class="product">
+          <div class="price">
+            <span class="current-price">₹7,499</span>
+            <span class="old-price">₹10,999</span>
+          </div>
 
-            <div class="product-image">
+          <button class="add-cart" onclick="addToCart()">
+            Add to Cart
+          </button>
+        </div>
+      </div>
 
-                <div class="discount">
-                    35% OFF
-                </div>
 
-                <div class="wishlist">
-                    ♡
-                </div>
-
-                ⌚
-
-            </div>
-
-            <div class="product-info">
-
-                <h3>
-                    Smart Watch
-                </h3>
-
-                <div class="rating">
-                    ★★★★☆
-                    <span>(213)</span>
-                </div>
-
-                <div class="price">
-
-                    <span class="current-price">
-                        ₹3,999
-                    </span>
-
-                    <span class="old-price">
-                        ₹6,199
-                    </span>
-
-                </div>
-
-                <button class="add-cart">
-                    Add to Cart
-                </button>
-
-            </div>
-
+      <div class="product">
+        <div class="product-image">
+          <span class="discount">-25%</span>
+          ⌚
         </div>
 
+        <div class="product-info">
+          <h3>SmartWatch Ultra</h3>
 
-        <!-- Product 5 -->
+          <div class="rating">
+            ★★★★★ <span>(182)</span>
+          </div>
 
-        <div class="product">
+          <div class="price">
+            <span class="current-price">₹5,999</span>
+            <span class="old-price">₹7,999</span>
+          </div>
 
-            <div class="product-image">
-
-                <div class="discount">
-                    15% OFF
-                </div>
-
-                <div class="wishlist">
-                    ♡
-                </div>
-
-                💻
-
-            </div>
-
-            <div class="product-info">
-
-                <h3>
-                    Laptop Pro
-                </h3>
-
-                <div class="rating">
-                    ★★★★★
-                    <span>(65)</span>
-                </div>
-
-                <div class="price">
-
-                    <span class="current-price">
-                        ₹59,999
-                    </span>
-
-                    <span class="old-price">
-                        ₹69,999
-                    </span>
-
-                </div>
-
-                <button class="add-cart">
-                    Add to Cart
-                </button>
-
-            </div>
-
+          <button class="add-cart" onclick="addToCart()">
+            Add to Cart
+          </button>
         </div>
-
-
-        <!-- Product 6 -->
-
-        <div class="product">
-
-            <div class="product-image">
-
-                <div class="discount">
-                    40% OFF
-                </div>
-
-                <div class="wishlist">
-                    ♡
-                </div>
-
-                👕
-            </div>
-
-            <div class="product-info">
-
-                <h3>
-                    Premium T-Shirt
-                </h3>
-
-                <div class="rating">
-                    ★★★★☆
-                    <span>(143)</span>
-                </div>
-
-                <div class="price">
-
-                    <span class="current-price">
-                        ₹799
-                    </span>
-
-                    <span class="old-price">
-                        ₹1,299
-                    </span>
-
-                </div>
-
-                <button class="add-cart">
-                    Add to Cart
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <!-- Product 7 -->
-
-        <div class="product">
-
-            <div class="product-image">
-
-                <div class="discount">
-                    25% OFF
-                </div>
-
-                <div class="wishlist">
-                    ♡
-                </div>
-
-                👜
-
-            </div>
-
-            <div class="product-info">
-
-                <h3>
-                    Designer Bag
-                </h3>
-
-                <div class="rating">
-                    ★★★★★
-                    <span>(88)</span>
-                </div>
-
-                <div class="price">
-
-                    <span class="current-price">
-                        ₹1,599
-                    </span>
-
-                    <span class="old-price">
-                        ₹2,199
-                    </span>
-
-                </div>
-
-                <button class="add-cart">
-                    Add to Cart
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <!-- Product 8 -->
-
-        <div class="product">
-
-            <div class="product-image">
-
-                <div class="discount">
-                    20% OFF
-                </div>
-
-                <div class="wishlist">
-                    ♡
-                </div>
-
-                🎮
-
-            </div>
-
-            <div class="product-info">
-
-                <h3>
-                    Gaming Controller
-                </h3>
-
-                <div class="rating">
-                    ★★★★☆
-                    <span>(117)</span>
-                </div>
-
-                <div class="price">
-
-                    <span class="current-price">
-                        ₹3,299
-                    </span>
-
-                    <span class="old-price">
-                        ₹4,199
-                    </span>
-
-                </div>
-
-                <button class="add-cart">
-                    Add to Cart
-                </button>
-
-            </div>
-
-        </div>
+      </div>
 
     </div>
 
-</section>
+  </section>
 
+  <!-- OFFER -->
+  <div class="offer" id="offers">
 
-<!-- ================= OFFER ================= -->
+    <div>
+      <h2>Big Tech Sale 🎉</h2>
 
-<section class="offer">
+      <p>
+        Get up to 50% off on selected electronics.
+        Limited-time deals available now.
+      </p>
+    </div>
 
-    <div class="offer-box">
+    <a href="#products" class="btn">Shop Deals</a>
 
-        <div>
+  </div>
 
-            <h2>
-                Special Weekend Offer 🎉
-            </h2>
+  <!-- FEATURES -->
+  <section>
 
-            <p>
-                Get extra 20% off on orders above ₹2,999.
-            </p>
+    <div class="section-header">
+      <h2>Why ElectroHub?</h2>
+      <p>Shopping made easy and secure</p>
+    </div>
 
-        </div>
+    <div class="features">
 
-        <a href="#products" class="offer-btn">
-            Shop Deals
-        </a>
+      <div class="feature">
+        <div class="feature-icon">🚚</div>
+        <h3>Fast Delivery</h3>
+        <p>Quick and reliable delivery to your doorstep.</p>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">🔒</div>
+        <h3>Secure Payment</h3>
+        <p>Your payments are protected with secure technology.</p>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">↩️</div>
+        <h3>Easy Returns</h3>
+        <p>Simple return process with customer-friendly policies.</p>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">💬</div>
+        <h3>24/7 Support</h3>
+        <p>Our support team is available whenever you need us.</p>
+      </div>
 
     </div>
 
-</section>
+  </section>
 
-
-<!-- ================= FOOTER ================= -->
-
-<footer id="contact">
+  <!-- FOOTER -->
+  <footer>
 
     <div class="footer-grid">
 
-        <div>
+      <div>
+        <h3>ElectroHub</h3>
+        <p>
+          Your destination for modern electronics,
+          smart devices and everyday technology.
+        </p>
+      </div>
 
-            <div class="footer-logo">
-                Shop<span>Nest</span>
-            </div>
+      <div>
+        <h3>Shop</h3>
+        <ul>
+          <li><a href="#products">Smartphones</a></li>
+          <li><a href="#products">Laptops</a></li>
+          <li><a href="#products">Audio</a></li>
+          <li><a href="#products">Gaming</a></li>
+        </ul>
+      </div>
 
-            <p>
-                Your everyday online shopping destination.
-                Discover great products at amazing prices.
-            </p>
+      <div>
+        <h3>Company</h3>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Privacy</a></li>
+        </ul>
+      </div>
 
-        </div>
-
-
-        <div>
-
-            <h4>Shop</h4>
-
-            <a href="#">Electronics</a>
-
-            <a href="#">Fashion</a>
-
-            <a href="#">Home</a>
-
-            <a href="#">Deals</a>
-
-        </div>
-
-
-        <div>
-
-            <h4>Help</h4>
-
-            <a href="#">Contact Us</a>
-
-            <a href="#">Shipping</a>
-
-            <a href="#">Returns</a>
-
-            <a href="#">FAQ</a>
-
-        </div>
-
-
-        <div>
-
-            <h4>Follow Us</h4>
-
-            <a href="#">Instagram</a>
-
-            <a href="#">Facebook</a>
-
-            <a href="#">Twitter</a>
-
-            <a href="#">YouTube</a>
-
-        </div>
+      <div>
+        <h3>Connect</h3>
+        <ul>
+          <li>📧 support@electrohub.com</li>
+          <li>📞 +91 98765 43210</li>
+          <li>📍 Bengaluru, India</li>
+        </ul>
+      </div>
 
     </div>
-
 
     <div class="copyright">
-
-        © 2026 ShopNest. All rights reserved.
-
+      © 2026 ElectroHub. All rights reserved.
     </div>
 
-</footer>
+  </footer>
 
+
+  <script>
+    let cartCount = 0;
+
+    function addToCart() {
+      cartCount++;
+
+      document.getElementById("cartCount").textContent = cartCount;
+
+      alert("Product added to cart!");
+    }
+  </script>
 
 </body>
 </html>
