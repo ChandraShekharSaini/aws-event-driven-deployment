@@ -1,10 +1,10 @@
-
 name: Deploy Website
 
 on:
   push:
     branches:
       - main
+
   workflow_dispatch:
 
 permissions:
@@ -17,8 +17,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout Repository
         uses: actions/checkout@v4
+
+      - name: Check GitHub OIDC configuration
+        run: |
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Ref: $GITHUB_REF"
+          echo "AWS_ROLE_ARN configured: ${{ vars.AWS_ROLE_ARN != '' }}"
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v5
@@ -28,7 +35,8 @@ jobs:
           audience: sts.amazonaws.com
 
       - name: Verify AWS Identity
-        run: aws sts get-caller-identity
+        run: |
+          aws sts get-caller-identity
 
       - name: Upload index.html
         run: |
@@ -40,4 +48,3 @@ jobs:
         run: |
           echo "index.html uploaded to S3"
           echo "S3 ObjectCreated event should trigger Lambda"
-
