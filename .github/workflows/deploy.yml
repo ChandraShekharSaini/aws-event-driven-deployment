@@ -1,43 +1,48 @@
 
-name: Deploy Website
+name: Test AWS Access Keys
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
-  deploy:
-    name: Deploy Website to S3
+  test-aws:
+    name: Test GitHub to AWS Authentication
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+
+      - name: Check GitHub Information
+        run: |
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Branch/Ref: $GITHUB_REF"
+          echo "Event: $GITHUB_EVENT_NAME"
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v5
         with:
-          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-          audience: sts.amazonaws.com
 
       - name: Verify AWS Identity
-        run: aws sts get-caller-identity
-
-      - name: Upload index.html
         run: |
-          aws s3 cp website/index.html \
-            s3://my-nginx-website-890123/index.html \
+          echo "AWS authentication successful!"
+          aws sts get-caller-identity
+
+      - name: Check S3 Access
+        run: |
+          aws s3 ls s3://my-nginx-website-890123
+
+      - name: Test Upload
+        run: |
+          echo "<h1>GitHub Actions Access Key Test</h1>" > test.html
+
+          aws s3 cp test.html \
+            s3://my-nginx-website-890123/test.html \
             --content-type text/html
 
-      - name: Deployment Started
-        run: |
-          echo "index.html uploaded to S3"
-          echo "S3 ObjectCreated event should trigger Lambda"
+          echo "S3 upload successful!"
 
