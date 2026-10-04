@@ -1,883 +1,334 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>ElectroHub mera | Electronics Store</title>
-
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f5f7fb;
-      color: #172033;
-    }
-
-    /* NAVBAR */
-    .navbar {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      background: rgba(255, 255, 255, 0.96);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid #e8ebf1;
-      padding: 16px 7%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 25px;
-    }
-
-    .logo {
-      font-size: 25px;
-      font-weight: 800;
-      color: #2563eb;
-      white-space: nowrap;
-    }
-
-    .logo span {
-      color: #111827;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 28px;
-      list-style: none;
-    }
-
-    .nav-links a {
-      text-decoration: none;
-      color: #374151;
-      font-weight: 600;
-      transition: 0.3s;
-    }
-
-    .nav-links a:hover {
-      color: #2563eb;
-    }
-
-    .cart {
-      background: #111827;
-      color: white;
-      padding: 10px 17px;
-      border-radius: 25px;
-      font-weight: 600;
-    }
-
-    /* HERO */
-    .hero {
-      min-height: 620px;
-      padding: 80px 7%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 50px;
-      background:
-        radial-gradient(circle at 85% 20%, rgba(59,130,246,.18), transparent 30%),
-        linear-gradient(135deg, #eef5ff, #ffffff);
-    }
-
-    .hero-content {
-      max-width: 650px;
-    }
-
-    .badge {
-      display: inline-block;
-      background: #dbeafe;
-      color: #1d4ed8;
-      padding: 9px 16px;
-      border-radius: 30px;
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 20px;
-    }
-
-    .hero h1 {
-      font-size: clamp(45px, 6vw, 76px);
-      line-height: 1.02;
-      margin-bottom: 25px;
-      letter-spacing: -3px;
-    }
-
-    .hero h1 span {
-      color: #2563eb;
-    }
-
-    .hero p {
-      color: #64748b;
-      font-size: 19px;
-      line-height: 1.7;
-      margin-bottom: 30px;
-      max-width: 570px;
-    }
-
-    .hero-buttons {
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      display: inline-block;
-      padding: 15px 25px;
-      border-radius: 10px;
-      text-decoration: none;
-      font-weight: 700;
-      transition: .3s;
-    }
-
-    .btn-primary {
-      background: #2563eb;
-      color: white;
-      box-shadow: 0 10px 25px rgba(37,99,235,.25);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-3px);
-      background: #1d4ed8;
-    }
-
-    .btn-secondary {
-      background: white;
-      color: #111827;
-      border: 1px solid #dbe1ea;
-    }
-
-    .btn-secondary:hover {
-      background: #f8fafc;
-    }
-
-    .hero-product {
-      width: 430px;
-      height: 430px;
-      border-radius: 50%;
-      background: linear-gradient(145deg, #111827, #334155);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      box-shadow: 0 35px 70px rgba(15,23,42,.22);
-      position: relative;
-      flex-shrink: 0;
-    }
-
-    .phone {
-      width: 190px;
-      height: 350px;
-      border: 8px solid #0f172a;
-      border-radius: 35px;
-      background: linear-gradient(145deg, #2563eb, #7c3aed);
-      box-shadow: 0 20px 50px rgba(0,0,0,.4);
-      transform: rotate(-8deg);
-      position: relative;
-    }
-
-    .phone::before {
-      content: "";
-      position: absolute;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 70px;
-      height: 18px;
-      background: #020617;
-      border-radius: 20px;
-    }
-
-    .phone::after {
-      content: "E";
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 100px;
-      font-weight: 900;
-      color: rgba(255,255,255,.9);
-    }
-
-    /* SECTION */
-    section {
-      padding: 80px 7%;
-    }
-
-    .section-header {
-      text-align: center;
-      margin-bottom: 45px;
-    }
-
-    .section-header h2 {
-      font-size: 40px;
-      margin-bottom: 12px;
-    }
-
-    .section-header p {
-      color: #64748b;
-    }
-
-    /* CATEGORIES */
-    .categories {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 18px;
-    }
-
-    .category {
-      background: white;
-      border: 1px solid #e8ebf1;
-      border-radius: 16px;
-      padding: 25px 15px;
-      text-align: center;
-      transition: .3s;
-      cursor: pointer;
-    }
-
-    .category:hover {
-      transform: translateY(-7px);
-      box-shadow: 0 15px 30px rgba(15,23,42,.08);
-    }
-
-    .category-icon {
-      font-size: 40px;
-      margin-bottom: 12px;
-    }
-
-    .category h3 {
-      font-size: 15px;
-    }
-
-    /* PRODUCTS */
-    .products {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 25px;
-    }
-
-    .product {
-      background: white;
-      border-radius: 18px;
-      overflow: hidden;
-      border: 1px solid #e8ebf1;
-      transition: .3s;
-    }
-
-    .product:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 40px rgba(15,23,42,.1);
-    }
-
-    .product-image {
-      height: 230px;
-      background: #f1f5f9;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 90px;
-      position: relative;
-    }
-
-    .discount {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      background: #ef4444;
-      color: white;
-      padding: 6px 10px;
-      border-radius: 7px;
-      font-size: 12px;
-      font-weight: bold;
-    }
-
-    .product-info {
-      padding: 22px;
-    }
-
-    .product-info h3 {
-      font-size: 18px;
-      margin-bottom: 8px;
-    }
-
-    .rating {
-      color: #f59e0b;
-      margin-bottom: 12px;
-      font-size: 14px;
-    }
-
-    .price {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-
-    .current-price {
-      font-size: 23px;
-      font-weight: 800;
-    }
-
-    .old-price {
-      color: #94a3b8;
-      text-decoration: line-through;
-      font-size: 14px;
-    }
-
-    .add-cart {
-      width: 100%;
-      border: 0;
-      background: #111827;
-      color: white;
-      padding: 12px;
-      border-radius: 9px;
-      cursor: pointer;
-      font-weight: 700;
-      transition: .3s;
-    }
-
-    .add-cart:hover {
-      background: #2563eb;
-    }
-
-    /* OFFER */
-    .offer {
-      margin: 0 7% 80px;
-      padding: 55px;
-      border-radius: 25px;
-      background: linear-gradient(120deg, #111827, #1e40af);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 30px;
-    }
-
-    .offer h2 {
-      font-size: 40px;
-      margin-bottom: 12px;
-    }
-
-    .offer p {
-      color: #cbd5e1;
-      line-height: 1.6;
-    }
-
-    .offer .btn {
-      background: white;
-      color: #111827;
-      white-space: nowrap;
-    }
-
-    /* FEATURES */
-    .features {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-    }
-
-    .feature {
-      background: white;
-      padding: 30px;
-      border-radius: 16px;
-      text-align: center;
-      border: 1px solid #e8ebf1;
-    }
-
-    .feature-icon {
-      font-size: 35px;
-      margin-bottom: 15px;
-    }
-
-    .feature h3 {
-      margin-bottom: 8px;
-    }
-
-    .feature p {
-      color: #64748b;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    /* FOOTER */
-    footer {
-      background: #0f172a;
-      color: white;
-      padding: 55px 7% 25px;
-    }
-
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr;
-      gap: 40px;
-      margin-bottom: 40px;
-    }
-
-    footer h3 {
-      margin-bottom: 18px;
-    }
-
-    footer p {
-      color: #94a3b8;
-      line-height: 1.7;
-    }
-
-    footer ul {
-      list-style: none;
-    }
-
-    footer li {
-      margin-bottom: 10px;
-      color: #94a3b8;
-    }
-
-    footer a {
-      color: #94a3b8;
-      text-decoration: none;
-    }
-
-    footer a:hover {
-      color: white;
-    }
-
-    .copyright {
-      border-top: 1px solid #1e293b;
-      padding-top: 22px;
-      text-align: center;
-      color: #64748b;
-      font-size: 14px;
-    }
-
-    /* RESPONSIVE */
-    @media (max-width: 1000px) {
-      .hero-product {
-        width: 330px;
-        height: 330px;
-      }
-
-      .categories {
-        grid-template-columns: repeat(3, 1fr);
-      }
-
-      .products {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .features {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 750px) {
-      .navbar {
-        padding: 15px 5%;
-      }
-
-      .nav-links {
-        display: none;
-      }
-
-      .hero {
-        padding: 60px 5%;
-        text-align: center;
-        flex-direction: column;
-      }
-
-      .hero p {
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      .hero-buttons {
-        justify-content: center;
-      }
-
-      .hero-product {
-        width: 280px;
-        height: 280px;
-      }
-
-      .phone {
-        width: 130px;
-        height: 240px;
-      }
-
-      section {
-        padding: 60px 5%;
-      }
-
-      .categories {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .products {
-        grid-template-columns: 1fr;
-      }
-
-      .offer {
-        margin: 0 5% 60px;
-        padding: 35px 25px;
-        flex-direction: column;
-        text-align: center;
-      }
-
-      .offer h2 {
-        font-size: 30px;
-      }
-
-      .features {
-        grid-template-columns: 1fr;
-      }
-
-      .footer-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-
-    @media (max-width: 450px) {
-      .categories {
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-      }
-
-      .category {
-        padding: 18px 8px;
-      }
-
-      .section-header h2 {
-        font-size: 30px;
-      }
-
-      .footer-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshCart - Grocery Store</title>
 </head>
 
-<body>
+<body style="margin:0; font-family:Arial,Helvetica,sans-serif; background:#f6f8f5; color:#1f2937;">
 
-  <!-- NAVBAR -->
-  <header class="navbar">
-    <div class="logo">Electro<span>Hub</span></div>
+    <!-- Header -->
+    <header style="background:#ffffff; padding:18px 7%; display:flex; align-items:center; justify-content:space-between; box-shadow:0 2px 10px rgba(0,0,0,0.08); position:sticky; top:0; z-index:1000;">
 
-    <ul class="nav-links">
-      <li><a href="#home">Home</a></li>
-      <li><a href="#categories">Categories</a></li>
-      <li><a href="#products">Products</a></li>
-      <li><a href="#offers">Offers</a></li>
-    </ul>
-
-    <div class="cart">🛒 Cart <span id="cartCount">0</span></div>
-  </header>
-
-  <!-- HERO -->
-  <section class="hero" id="home">
-
-    <div class="hero-content">
-      <span class="badge">🔥 New Season Collection</span>
-
-      <h1>
-        Technology<br />
-        <span>Made Simple.</span>
-      </h1>
-
-      <p>
-        Discover the latest smartphones, laptops, headphones,
-        smart watches and premium electronics at amazing prices.
-      </p>
-
-      <div class="hero-buttons">
-        <a href="#products" class="btn btn-primary">Shop Electronics →</a>
-        <a href="#categories" class="btn btn-secondary">Explore Categories</a>
-      </div>
-    </div>
-
-    <div class="hero-product">
-      <div class="phone"></div>
-    </div>
-
-  </section>
-
-  <!-- CATEGORIES -->
-  <section id="categories">
-
-    <div class="section-header">
-      <h2>Shop by Category</h2>
-      <p>Everything you need in one place</p>
-    </div>
-
-    <div class="categories">
-
-      <div class="category">
-        <div class="category-icon">📱</div>
-        <h3>Smartphones</h3>
-      </div>
-
-      <div class="category">
-        <div class="category-icon">💻</div>
-        <h3>Laptops</h3>
-      </div>
-
-      <div class="category">
-        <div class="category-icon">🎧</div>
-        <h3>Headphones</h3>
-      </div>
-
-      <div class="category">
-        <div class="category-icon">⌚</div>
-        <h3>Smart Watches</h3>
-      </div>
-
-      <div class="category">
-        <div class="category-icon">📷</div>
-        <h3>Cameras</h3>
-      </div>
-
-      <div class="category">
-        <div class="category-icon">🎮</div>
-        <h3>Gaming</h3>
-      </div>
-
-    </div>
-
-  </section>
-
-  <!-- PRODUCTS -->
-  <section id="products">
-
-    <div class="section-header">
-      <h2>Featured Products</h2>
-      <p>Top electronics picked for you</p>
-    </div>
-
-    <div class="products">
-
-      <div class="product">
-        <div class="product-image">
-          <span class="discount">-20%</span>
-          📱
+        <div style="font-size:28px; font-weight:800; color:#16a34a;">
+            🛒 Fresh<span style="color:#f59e0b;">Cart</span>
         </div>
 
-        <div class="product-info">
-          <h3>Pro Smartphone X</h3>
-
-          <div class="rating">
-            ★★★★★ <span>(128)</span>
-          </div>
-
-          <div class="price">
-            <span class="current-price">₹49,999</span>
-            <span class="old-price">₹62,999</span>
-          </div>
-
-          <button class="add-cart" onclick="addToCart()">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-
-
-      <div class="product">
-        <div class="product-image">
-          <span class="discount">-15%</span>
-          💻
+        <div style="width:40%; position:relative;">
+            <input
+                type="text"
+                placeholder="Search for groceries..."
+                style="width:100%; box-sizing:border-box; padding:13px 45px 13px 18px; border:1px solid #d1d5db; border-radius:30px; outline:none; font-size:14px;"
+            >
+            <span style="position:absolute; right:18px; top:11px; font-size:20px;">🔍</span>
         </div>
 
-        <div class="product-info">
-          <h3>UltraBook Pro 15</h3>
-
-          <div class="rating">
-            ★★★★★ <span>(96)</span>
-          </div>
-
-          <div class="price">
-            <span class="current-price">₹74,990</span>
-            <span class="old-price">₹88,000</span>
-          </div>
-
-          <button class="add-cart" onclick="addToCart()">
-            Add to Cart
-          </button>
+        <div style="display:flex; gap:20px; align-items:center;">
+            <span style="font-size:14px; cursor:pointer;">📍 Location</span>
+            <span style="font-size:14px; cursor:pointer;">👤 Account</span>
+            <span style="font-size:23px; cursor:pointer;">🛒</span>
         </div>
-      </div>
+    </header>
 
 
-      <div class="product">
-        <div class="product-image">
-          <span class="discount">-30%</span>
-          🎧
-        </div>
-
-        <div class="product-info">
-          <h3>NoiseCancel Pro</h3>
-
-          <div class="rating">
-            ★★★★☆ <span>(214)</span>
-          </div>
-
-          <div class="price">
-            <span class="current-price">₹7,499</span>
-            <span class="old-price">₹10,999</span>
-          </div>
-
-          <button class="add-cart" onclick="addToCart()">
-            Add to Cart
-          </button>
-        </div>
-      </div>
+    <!-- Navigation -->
+    <nav style="background:#15803d; padding:12px 7%; display:flex; gap:30px; color:white; font-size:14px; font-weight:600;">
+        <span style="cursor:pointer;">Home</span>
+        <span style="cursor:pointer;">Vegetables</span>
+        <span style="cursor:pointer;">Fruits</span>
+        <span style="cursor:pointer;">Dairy</span>
+        <span style="cursor:pointer;">Bakery</span>
+        <span style="cursor:pointer;">Beverages</span>
+        <span style="cursor:pointer;">Snacks</span>
+        <span style="cursor:pointer;">Offers 🔥</span>
+    </nav>
 
 
-      <div class="product">
-        <div class="product-image">
-          <span class="discount">-25%</span>
-          ⌚
+    <!-- Hero Section -->
+    <section style="margin:35px 7%; background:linear-gradient(120deg,#dcfce7,#fef3c7); border-radius:25px; padding:55px; display:flex; align-items:center; justify-content:space-between; overflow:hidden;">
+
+        <div style="max-width:550px;">
+            <div style="display:inline-block; background:#16a34a; color:white; padding:7px 14px; border-radius:20px; font-size:12px; font-weight:bold;">
+                FRESH & ORGANIC
+            </div>
+
+            <h1 style="font-size:48px; margin:18px 0 12px; line-height:1.1; color:#14532d;">
+                Fresh Groceries,<br>
+                <span style="color:#f59e0b;">Delivered Fast.</span>
+            </h1>
+
+            <p style="font-size:17px; line-height:1.6; color:#4b5563;">
+                Shop fresh vegetables, fruits, dairy products and everyday essentials at the best prices.
+            </p>
+
+            <button style="margin-top:15px; background:#16a34a; color:white; border:none; padding:15px 28px; border-radius:30px; font-size:15px; font-weight:bold; cursor:pointer;">
+                Shop Now →
+            </button>
         </div>
 
-        <div class="product-info">
-          <h3>SmartWatch Ultra</h3>
-
-          <div class="rating">
-            ★★★★★ <span>(182)</span>
-          </div>
-
-          <div class="price">
-            <span class="current-price">₹5,999</span>
-            <span class="old-price">₹7,999</span>
-          </div>
-
-          <button class="add-cart" onclick="addToCart()">
-            Add to Cart
-          </button>
+        <div style="font-size:150px; margin-right:50px;">
+            🥦🥕🍎
         </div>
-      </div>
 
-    </div>
+    </section>
 
-  </section>
 
-  <!-- OFFER -->
-  <div class="offer" id="offers">
+    <!-- Categories -->
+    <section style="padding:10px 7% 35px;">
 
-    <div>
-      <h2>Big Tech Sale 🎉</h2>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2 style="font-size:28px; margin-bottom:20px;">Shop by Category</h2>
+            <span style="color:#16a34a; font-weight:bold; cursor:pointer;">View All →</span>
+        </div>
 
-      <p>
-        Get up to 50% off on selected electronics.
-        Limited-time deals available now.
-      </p>
-    </div>
+        <div style="display:grid; grid-template-columns:repeat(6,1fr); gap:18px;">
 
-    <a href="#products" class="btn">Shop Deals</a>
+            <div style="background:white; padding:25px 10px; text-align:center; border-radius:18px; box-shadow:0 3px 12px rgba(0,0,0,0.06); cursor:pointer;">
+                <div style="font-size:48px;">🥦</div>
+                <p style="font-weight:bold;">Vegetables</p>
+            </div>
 
-  </div>
+            <div style="background:white; padding:25px 10px; text-align:center; border-radius:18px; box-shadow:0 3px 12px rgba(0,0,0,0.06); cursor:pointer;">
+                <div style="font-size:48px;">🍎</div>
+                <p style="font-weight:bold;">Fruits</p>
+            </div>
 
-  <!-- FEATURES -->
-  <section>
+            <div style="background:white; padding:25px 10px; text-align:center; border-radius:18px; box-shadow:0 3px 12px rgba(0,0,0,0.06); cursor:pointer;">
+                <div style="font-size:48px;">🥛</div>
+                <p style="font-weight:bold;">Dairy</p>
+            </div>
 
-    <div class="section-header">
-      <h2>Why ElectroHub?</h2>
-      <p>Shopping made easy and secure</p>
-    </div>
+            <div style="background:white; padding:25px 10px; text-align:center; border-radius:18px; box-shadow:0 3px 12px rgba(0,0,0,0.06); cursor:pointer;">
+                <div style="font-size:48px;">🍞</div>
+                <p style="font-weight:bold;">Bakery</p>
+            </div>
 
-    <div class="features">
+            <div style="background:white; padding:25px 10px; text-align:center; border-radius:18px; box-shadow:0 3px 12px rgba(0,0,0,0.06); cursor:pointer;">
+                <div style="font-size:48px;">🥤</div>
+                <p style="font-weight:bold;">Beverages</p>
+            </div>
 
-      <div class="feature">
-        <div class="feature-icon">🚚</div>
-        <h3>Fast Delivery</h3>
-        <p>Quick and reliable delivery to your doorstep.</p>
-      </div>
+            <div style="background:white; padding:25px 10px; text-align:center; border-radius:18px; box-shadow:0 3px 12px rgba(0,0,0,0.06); cursor:pointer;">
+                <div style="font-size:48px;">🍪</div>
+                <p style="font-weight:bold;">Snacks</p>
+            </div>
 
-      <div class="feature">
-        <div class="feature-icon">🔒</div>
-        <h3>Secure Payment</h3>
-        <p>Your payments are protected with secure technology.</p>
-      </div>
+        </div>
+    </section>
 
-      <div class="feature">
-        <div class="feature-icon">↩️</div>
-        <h3>Easy Returns</h3>
-        <p>Simple return process with customer-friendly policies.</p>
-      </div>
 
-      <div class="feature">
-        <div class="feature-icon">💬</div>
-        <h3>24/7 Support</h3>
-        <p>Our support team is available whenever you need us.</p>
-      </div>
+    <!-- Products -->
+    <section style="padding:15px 7% 45px;">
 
-    </div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2 style="font-size:28px;">Popular Products</h2>
+            <span style="color:#16a34a; font-weight:bold;">View All →</span>
+        </div>
 
-  </section>
+        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:22px;">
 
-  <!-- FOOTER -->
-  <footer>
+            <!-- Product 1 -->
+            <div style="background:white; border-radius:20px; padding:18px; box-shadow:0 4px 15px rgba(0,0,0,0.07); position:relative;">
+                <div style="position:absolute; top:15px; left:15px; background:#dcfce7; color:#15803d; padding:5px 9px; border-radius:12px; font-size:11px; font-weight:bold;">
+                    20% OFF
+                </div>
 
-    <div class="footer-grid">
+                <div style="height:180px; background:#f9fafb; border-radius:15px; display:flex; justify-content:center; align-items:center; font-size:100px;">
+                    🍎
+                </div>
 
-      <div>
-        <h3>ElectroHub</h3>
-        <p>
-          Your destination for modern electronics,
-          smart devices and everyday technology.
+                <p style="color:#6b7280; font-size:12px; margin-bottom:5px;">Fresh Fruits</p>
+
+                <h3 style="margin:5px 0;">Red Apples</h3>
+
+                <p style="font-size:13px; color:#6b7280;">1 Kg</p>
+
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <span style="font-size:20px; font-weight:bold;">₹120</span>
+                        <span style="text-decoration:line-through; color:#9ca3af; font-size:13px;">₹150</span>
+                    </div>
+
+                    <button style="background:#16a34a; color:white; border:none; border-radius:12px; padding:10px 14px; font-size:18px; cursor:pointer;">
+                        +
+                    </button>
+                </div>
+            </div>
+
+
+            <!-- Product 2 -->
+            <div style="background:white; border-radius:20px; padding:18px; box-shadow:0 4px 15px rgba(0,0,0,0.07);">
+                <div style="height:180px; background:#f9fafb; border-radius:15px; display:flex; justify-content:center; align-items:center; font-size:100px;">
+                    🥦
+                </div>
+
+                <p style="color:#6b7280; font-size:12px; margin-bottom:5px;">Fresh Vegetables</p>
+
+                <h3 style="margin:5px 0;">Fresh Broccoli</h3>
+
+                <p style="font-size:13px; color:#6b7280;">500 g</p>
+
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <span style="font-size:20px; font-weight:bold;">₹80</span>
+                    </div>
+
+                    <button style="background:#16a34a; color:white; border:none; border-radius:12px; padding:10px 14px; font-size:18px; cursor:pointer;">
+                        +
+                    </button>
+                </div>
+            </div>
+
+
+            <!-- Product 3 -->
+            <div style="background:white; border-radius:20px; padding:18px; box-shadow:0 4px 15px rgba(0,0,0,0.07); position:relative;">
+                <div style="position:absolute; top:15px; left:15px; background:#fef3c7; color:#b45309; padding:5px 9px; border-radius:12px; font-size:11px; font-weight:bold;">
+                    BEST SELLER
+                </div>
+
+                <div style="height:180px; background:#f9fafb; border-radius:15px; display:flex; justify-content:center; align-items:center; font-size:100px;">
+                    🥛
+                </div>
+
+                <p style="color:#6b7280; font-size:12px; margin-bottom:5px;">Dairy</p>
+
+                <h3 style="margin:5px 0;">Fresh Milk</h3>
+
+                <p style="font-size:13px; color:#6b7280;">1 Liter</p>
+
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <span style="font-size:20px; font-weight:bold;">₹65</span>
+                    </div>
+
+                    <button style="background:#16a34a; color:white; border:none; border-radius:12px; padding:10px 14px; font-size:18px; cursor:pointer;">
+                        +
+                    </button>
+                </div>
+            </div>
+
+
+            <!-- Product 4 -->
+            <div style="background:white; border-radius:20px; padding:18px; box-shadow:0 4px 15px rgba(0,0,0,0.07);">
+                <div style="height:180px; background:#f9fafb; border-radius:15px; display:flex; justify-content:center; align-items:center; font-size:100px;">
+                    🍞
+                </div>
+
+                <p style="color:#6b7280; font-size:12px; margin-bottom:5px;">Bakery</p>
+
+                <h3 style="margin:5px 0;">Brown Bread</h3>
+
+                <p style="font-size:13px; color:#6b7280;">400 g</p>
+
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <span style="font-size:20px; font-weight:bold;">₹45</span>
+                    </div>
+
+                    <button style="background:#16a34a; color:white; border:none; border-radius:12px; padding:10px 14px; font-size:18px; cursor:pointer;">
+                        +
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- Offer Banner -->
+    <section style="margin:0 7% 45px; background:#166534; color:white; border-radius:22px; padding:35px 45px; display:flex; justify-content:space-between; align-items:center;">
+
+        <div>
+            <p style="margin:0 0 8px; color:#bbf7d0; font-weight:bold;">LIMITED TIME OFFER</p>
+
+            <h2 style="font-size:32px; margin:5px 0;">
+                Get 30% OFF on your first order 🎉
+            </h2>
+
+            <p style="margin-bottom:0; color:#dcfce7;">
+                Use coupon code: <b>FRESH30</b>
+            </p>
+        </div>
+
+        <button style="background:#f59e0b; color:#ffffff; border:none; padding:14px 25px; border-radius:25px; font-weight:bold; cursor:pointer;">
+            Grab Offer
+        </button>
+
+    </section>
+
+
+    <!-- Features -->
+    <section style="padding:10px 7% 50px; display:grid; grid-template-columns:repeat(4,1fr); gap:20px;">
+
+        <div style="background:white; padding:25px; border-radius:18px; text-align:center;">
+            <div style="font-size:35px;">🚚</div>
+            <h3>Fast Delivery</h3>
+            <p style="font-size:13px; color:#6b7280;">Delivery within 30 minutes</p>
+        </div>
+
+        <div style="background:white; padding:25px; border-radius:18px; text-align:center;">
+            <div style="font-size:35px;">🥬</div>
+            <h3>Fresh Products</h3>
+            <p style="font-size:13px; color:#6b7280;">Quality checked groceries</p>
+        </div>
+
+        <div style="background:white; padding:25px; border-radius:18px; text-align:center;">
+            <div style="font-size:35px;">🔒</div>
+            <h3>Secure Payment</h3>
+            <p style="font-size:13px; color:#6b7280;">100% secure checkout</p>
+        </div>
+
+        <div style="background:white; padding:25px; border-radius:18px; text-align:center;">
+            <div style="font-size:35px;">💰</div>
+            <h3>Best Prices</h3>
+            <p style="font-size:13px; color:#6b7280;">Great deals every day</p>
+        </div>
+
+    </section>
+
+
+    <!-- Footer -->
+    <footer style="background:#111827; color:white; padding:45px 7%;">
+
+        <div style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:40px;">
+
+            <div>
+                <h2 style="color:#4ade80;">🛒 FreshCart</h2>
+
+                <p style="color:#9ca3af; line-height:1.7;">
+                    Your one-stop online grocery store for fresh, quality and affordable products delivered to your doorstep.
+                </p>
+            </div>
+
+            <div>
+                <h3>Company</h3>
+                <p style="color:#9ca3af;">About Us</p>
+                <p style="color:#9ca3af;">Careers</p>
+                <p style="color:#9ca3af;">Contact</p>
+            </div>
+
+            <div>
+                <h3>Support</h3>
+                <p style="color:#9ca3af;">Help Center</p>
+                <p style="color:#9ca3af;">Delivery Info</p>
+                <p style="color:#9ca3af;">Returns</p>
+            </div>
+
+            <div>
+                <h3>Follow Us</h3>
+                <p style="font-size:24px;">📘 📸 🐦</p>
+            </div>
+
+        </div>
+
+        <hr style="border:none; border-top:1px solid #374151; margin:35px 0 20px;">
+
+        <p style="text-align:center; color:#9ca3af; margin:0;">
+            © 2026 FreshCart. All rights reserved.
         </p>
-      </div>
 
-      <div>
-        <h3>Shop</h3>
-        <ul>
-          <li><a href="#products">Smartphones</a></li>
-          <li><a href="#products">Laptops</a></li>
-          <li><a href="#products">Audio</a></li>
-          <li><a href="#products">Gaming</a></li>
-        </ul>
-      </div>
-
-      <div>
-        <h3>Company</h3>
-        <ul>
-          <li><a href="#">About Us</a></li>
-          <li><a href="#">Contact</a></li>
-          <li><a href="#">Careers</a></li>
-          <li><a href="#">Privacy</a></li>
-        </ul>
-      </div>
-
-      <div>
-        <h3>Connect</h3>
-        <ul>
-          <li>📧 support@electrohub.com</li>
-          <li>📞 +91 98765 43210</li>
-          <li>📍 Bengaluru, India</li>
-        </ul>
-      </div>
-
-    </div>
-
-    <div class="copyright">
-      © 2026 ElectroHub. All rights reserved.
-    </div>
-
-  </footer>
-
-
-  <script>
-    let cartCount = 0;
-
-    function addToCart() {
-      cartCount++;
-
-      document.getElementById("cartCount").textContent = cartCount;
-
-      alert("Product added to cart!");
-    }
-  </script>
+    </footer>
 
 </body>
 </html>
