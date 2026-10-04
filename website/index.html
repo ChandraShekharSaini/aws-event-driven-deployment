@@ -3,332 +3,1404 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FreshCart - Grocery Store</title>
+
+    <title>ShopNest - Online Store</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f6f7fb;
+            color: #172033;
+        }
+
+        /* ================= HEADER ================= */
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .topbar {
+            max-width: 1200px;
+            margin: auto;
+            padding: 16px 20px;
+
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+            color: #111827;
+            white-space: nowrap;
+        }
+
+        .logo span {
+            color: #2563eb;
+        }
+
+        .search {
+            flex: 1;
+            position: relative;
+        }
+
+        .search input {
+            width: 100%;
+            padding: 13px 45px 13px 18px;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            outline: none;
+            font-size: 14px;
+            background: #f9fafb;
+        }
+
+        .search input:focus {
+            border-color: #2563eb;
+            background: white;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 16px;
+            top: 11px;
+            font-size: 20px;
+        }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .action {
+            position: relative;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+
+            background: #ef4444;
+            color: white;
+
+            width: 19px;
+            height: 19px;
+
+            border-radius: 50%;
+
+            font-size: 11px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ================= NAV ================= */
+
+        .nav {
+            max-width: 1200px;
+            margin: auto;
+
+            padding: 0 20px 14px;
+
+            display: flex;
+            gap: 28px;
+
+            overflow-x: auto;
+        }
+
+        .nav a {
+            color: #4b5563;
+            text-decoration: none;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .nav a:hover {
+            color: #2563eb;
+        }
+
+        /* ================= HERO ================= */
+
+        .hero {
+            max-width: 1200px;
+            margin: 30px auto;
+
+            padding: 0 20px;
+        }
+
+        .hero-box {
+            background: linear-gradient(
+                135deg,
+                #1d4ed8,
+                #7c3aed
+            );
+
+            color: white;
+
+            border-radius: 25px;
+
+            padding: 60px;
+
+            min-height: 340px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 550px;
+        }
+
+        .hero-content small {
+            color: #dbeafe;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .hero-content h1 {
+            font-size: 48px;
+            line-height: 1.1;
+            margin: 15px 0;
+        }
+
+        .hero-content p {
+            color: #e0e7ff;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .shop-btn {
+            display: inline-block;
+            background: white;
+            color: #1d4ed8;
+
+            padding: 14px 25px;
+
+            border-radius: 10px;
+
+            text-decoration: none;
+
+            font-weight: bold;
+        }
+
+        .hero-product {
+            font-size: 160px;
+            transform: rotate(-8deg);
+        }
+
+        /* ================= CATEGORIES ================= */
+
+        .section {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 25px;
+        }
+
+        .section-header h2 {
+            font-size: 28px;
+        }
+
+        .section-header a {
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 15px;
+        }
+
+        .category {
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 20px 10px;
+
+            text-align: center;
+
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .category:hover {
+            transform: translateY(-4px);
+        }
+
+        .category-icon {
+            font-size: 35px;
+            margin-bottom: 10px;
+        }
+
+        .category p {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* ================= PRODUCTS ================= */
+
+        .products {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 22px;
+        }
+
+        .product {
+            background: white;
+
+            border-radius: 18px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 6px 25px rgba(0,0,0,0.06);
+
+            transition: 0.2s;
+
+            position: relative;
+        }
+
+        .product:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-image {
+            height: 220px;
+
+            background: #f1f5f9;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 90px;
+
+            position: relative;
+        }
+
+        .discount {
+            position: absolute;
+
+            top: 12px;
+            left: 12px;
+
+            background: #16a34a;
+
+            color: white;
+
+            padding: 5px 8px;
+
+            border-radius: 6px;
+
+            font-size: 11px;
+
+            font-weight: bold;
+        }
+
+        .wishlist {
+            position: absolute;
+
+            top: 12px;
+            right: 12px;
+
+            width: 35px;
+            height: 35px;
+
+            background: white;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            cursor: pointer;
+
+            box-shadow: 0 3px 10px rgba(0,0,0,.1);
+        }
+
+        .product-info {
+            padding: 18px;
+        }
+
+        .product-info h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .rating {
+            color: #f59e0b;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .rating span {
+            color: #6b7280;
+        }
+
+        .price {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            margin-bottom: 15px;
+        }
+
+        .current-price {
+            font-size: 19px;
+            font-weight: bold;
+        }
+
+        .old-price {
+            font-size: 13px;
+            color: #9ca3af;
+            text-decoration: line-through;
+        }
+
+        .add-cart {
+            width: 100%;
+
+            padding: 11px;
+
+            border: none;
+
+            background: #2563eb;
+
+            color: white;
+
+            border-radius: 9px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .add-cart:hover {
+            background: #1d4ed8;
+        }
+
+        /* ================= OFFER ================= */
+
+        .offer {
+            max-width: 1200px;
+
+            margin: 60px auto;
+
+            padding: 0 20px;
+        }
+
+        .offer-box {
+            background: #111827;
+
+            color: white;
+
+            border-radius: 22px;
+
+            padding: 40px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+        }
+
+        .offer-box h2 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .offer-box p {
+            color: #cbd5e1;
+        }
+
+        .offer-btn {
+            background: #2563eb;
+
+            color: white;
+
+            padding: 13px 22px;
+
+            border-radius: 9px;
+
+            text-decoration: none;
+
+            font-weight: bold;
+
+            white-space: nowrap;
+        }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+            background: #020617;
+
+            color: #94a3b8;
+
+            padding: 45px 20px;
+
+            margin-top: 60px;
+        }
+
+        .footer-grid {
+            max-width: 1200px;
+
+            margin: auto;
+
+            display: grid;
+
+            grid-template-columns:
+                2fr 1fr 1fr 1fr;
+
+            gap: 35px;
+        }
+
+        .footer-logo {
+            color: white;
+
+            font-size: 24px;
+
+            font-weight: bold;
+
+            margin-bottom: 15px;
+        }
+
+        .footer-logo span {
+            color: #60a5fa;
+        }
+
+        footer h4 {
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        footer a {
+            display: block;
+
+            color: #94a3b8;
+
+            text-decoration: none;
+
+            font-size: 14px;
+
+            margin-bottom: 10px;
+        }
+
+        footer p {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .copyright {
+            max-width: 1200px;
+
+            margin: 35px auto 0;
+
+            padding-top: 20px;
+
+            border-top: 1px solid #1e293b;
+
+            text-align: center;
+
+            font-size: 13px;
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 900px) {
+
+            .products {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .categories {
+                grid-template-columns:
+                    repeat(3, 1fr);
+            }
+
+            .hero-content h1 {
+                font-size: 40px;
+            }
+
+            .hero-product {
+                font-size: 110px;
+            }
+
+            .footer-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .topbar {
+                padding: 13px 15px;
+
+                gap: 12px;
+
+                flex-wrap: wrap;
+            }
+
+            .logo {
+                font-size: 22px;
+            }
+
+            .search {
+                order: 3;
+                flex-basis: 100%;
+            }
+
+            .actions {
+                margin-left: auto;
+            }
+
+            .nav {
+                padding-left: 15px;
+            }
+
+            .hero {
+                margin-top: 15px;
+            }
+
+            .hero-box {
+                padding: 35px 25px;
+
+                min-height: 450px;
+
+                text-align: center;
+
+                justify-content: center;
+            }
+
+            .hero-content h1 {
+                font-size: 36px;
+            }
+
+            .hero-product {
+                display: none;
+            }
+
+            .categories {
+                grid-template-columns:
+                    repeat(3, 1fr);
+
+                gap: 10px;
+            }
+
+            .category {
+                padding: 15px 5px;
+            }
+
+            .category-icon {
+                font-size: 28px;
+            }
+
+            .products {
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+                gap: 12px;
+            }
+
+            .product-image {
+                height: 160px;
+                font-size: 65px;
+            }
+
+            .product-info {
+                padding: 12px;
+            }
+
+            .product-info h3 {
+                font-size: 14px;
+            }
+
+            .current-price {
+                font-size: 16px;
+            }
+
+            .old-price {
+                font-size: 11px;
+            }
+
+            .offer-box {
+                flex-direction: column;
+
+                text-align: center;
+
+                gap: 25px;
+
+                padding: 35px 20px;
+            }
+
+            .offer-box h2 {
+                font-size: 26px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 380px) {
+
+            .products {
+                grid-template-columns: 1fr;
+            }
+
+            .product-image {
+                height: 220px;
+            }
+        }
+    </style>
 </head>
 
-<body style="margin:0; font-family:Arial,Helvetica,sans-serif; background:#f6f8f5; color:#1f2937;">
+<body>
 
-    <!-- Header -->
-    <header style="background:#ffffff; padding:18px 7%; display:flex; align-items:center; justify-content:space-between; box-shadow:0 2px 10px rgba(0,0,0,0.08); position:sticky; top:0; z-index:1000;">
 
-        <div style="font-size:28px; font-weight:800; color:#16a34a;">
-            🛒 Fresh<span style="color:#f59e0b;">Cart</span>
+<!-- ================= HEADER ================= -->
+
+<header>
+
+    <div class="topbar">
+
+        <div class="logo">
+            Shop<span>Nest</span>
         </div>
 
-        <div style="width:40%; position:relative;">
+        <div class="search">
+
             <input
                 type="text"
-                placeholder="Search for groceries..."
-                style="width:100%; box-sizing:border-box; padding:13px 45px 13px 18px; border:1px solid #d1d5db; border-radius:30px; outline:none; font-size:14px;"
+                placeholder="Search products..."
             >
-            <span style="position:absolute; right:18px; top:11px; font-size:20px;">🔍</span>
+
+            <div class="search-icon">
+                🔍
+            </div>
+
         </div>
 
-        <div style="display:flex; gap:20px; align-items:center;">
-            <span style="font-size:14px; cursor:pointer;">📍 Location</span>
-            <span style="font-size:14px; cursor:pointer;">👤 Account</span>
-            <span style="font-size:23px; cursor:pointer;">🛒</span>
+        <div class="actions">
+
+            <div class="action">
+                ♡
+            </div>
+
+            <div class="action">
+
+                🛒
+
+                <div class="cart-count">
+                    3
+                </div>
+
+            </div>
+
         </div>
-    </header>
+
+    </div>
 
 
-    <!-- Navigation -->
-    <nav style="background:#15803d; padding:12px 7%; display:flex; gap:30px; color:white; font-size:14px; font-weight:600;">
-        <span style="cursor:pointer;">Home</span>
-        <span style="cursor:pointer;">Vegetables</span>
-        <span style="cursor:pointer;">Fruits</span>
-        <span style="cursor:pointer;">Dairy</span>
-        <span style="cursor:pointer;">Bakery</span>
-        <span style="cursor:pointer;">Beverages</span>
-        <span style="cursor:pointer;">Snacks</span>
-        <span style="cursor:pointer;">Offers 🔥</span>
+    <nav class="nav">
+
+        <a href="#">Home</a>
+
+        <a href="#categories">
+            Categories
+        </a>
+
+        <a href="#products">
+            Electronics
+        </a>
+
+        <a href="#products">
+            Fashion
+        </a>
+
+        <a href="#products">
+            Home & Living
+        </a>
+
+        <a href="#products">
+            Deals
+        </a>
+
+        <a href="#contact">
+            Contact
+        </a>
+
     </nav>
 
+</header>
 
-    <!-- Hero Section -->
-    <section style="margin:35px 7%; background:linear-gradient(120deg,#dcfce7,#fef3c7); border-radius:25px; padding:55px; display:flex; align-items:center; justify-content:space-between; overflow:hidden;">
 
-        <div style="max-width:550px;">
-            <div style="display:inline-block; background:#16a34a; color:white; padding:7px 14px; border-radius:20px; font-size:12px; font-weight:bold;">
-                FRESH & ORGANIC
-            </div>
+<!-- ================= HERO ================= -->
 
-            <h1 style="font-size:48px; margin:18px 0 12px; line-height:1.1; color:#14532d;">
-                Fresh Groceries,<br>
-                <span style="color:#f59e0b;">Delivered Fast.</span>
+<section class="hero">
+
+    <div class="hero-box">
+
+        <div class="hero-content">
+
+            <small>
+                BIG SALE • UP TO 200% OFF
+            </small>
+
+            <h1>
+                Chandra You Love.
+                <br>
+                <span>One Place.</span>
             </h1>
 
-            <p style="font-size:17px; line-height:1.6; color:#4b5563;">
-                Shop fresh vegetables, fruits, dairy products and everyday essentials at the best prices.
+            <p>
+                Discover trending products, amazing deals
+                and everyday essentials at prices you'll love.
             </p>
 
-            <button style="margin-top:15px; background:#16a34a; color:white; border:none; padding:15px 28px; border-radius:30px; font-size:15px; font-weight:bold; cursor:pointer;">
+            <a href="#products" class="shop-btn">
                 Shop Now →
-            </button>
-        </div>
-
-        <div style="font-size:150px; margin-right:50px;">
-            🥦🥕🍎
-        </div>
-
-    </section>
-
-
-    <!-- Categories -->
-    <section style="padding:10px 7% 35px;">
-
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h2 style="font-size:28px; margin-bottom:20px;">Shop by Category</h2>
-            <span style="color:#16a34a; font-weight:bold; cursor:pointer;">View All →</span>
-        </div>
-
-        <div style="display:grid; grid-template-columns:repeat(6,1fr); gap:18px;">
-
-            <div style="background:white; padding:25px 10px; text-align:center; border-radius:18px; box-shadow:0 3px 12px rgba(0,0,0,0.06); cursor:pointer;">
-                <div style="font-size:48px;">🥦</div>
-                <p style="font-weight:bold;">Vegetables</p>
-            </div>
-
-            <div style="background:white; padding:25px 10px; text-align:center; border-radius:18px; box-shadow:0 3px 12px rgba(0,0,0,0.06); cursor:pointer;">
-                <div style="font-size:48px;">🍎</div>
-                <p style="font-weight:bold;">Fruits</p>
-            </div>
-
-            <div style="background:white; padding:25px 10px; text-align:center; border-radius:18px; box-shadow:0 3px 12px rgba(0,0,0,0.06); cursor:pointer;">
-                <div style="font-size:48px;">🥛</div>
-                <p style="font-weight:bold;">Dairy</p>
-            </div>
-
-            <div style="background:white; padding:25px 10px; text-align:center; border-radius:18px; box-shadow:0 3px 12px rgba(0,0,0,0.06); cursor:pointer;">
-                <div style="font-size:48px;">🍞</div>
-                <p style="font-weight:bold;">Bakery</p>
-            </div>
-
-            <div style="background:white; padding:25px 10px; text-align:center; border-radius:18px; box-shadow:0 3px 12px rgba(0,0,0,0.06); cursor:pointer;">
-                <div style="font-size:48px;">🥤</div>
-                <p style="font-weight:bold;">Beverages</p>
-            </div>
-
-            <div style="background:white; padding:25px 10px; text-align:center; border-radius:18px; box-shadow:0 3px 12px rgba(0,0,0,0.06); cursor:pointer;">
-                <div style="font-size:48px;">🍪</div>
-                <p style="font-weight:bold;">Snacks</p>
-            </div>
+            </a>
 
         </div>
-    </section>
 
 
-    <!-- Products -->
-    <section style="padding:15px 7% 45px;">
-
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h2 style="font-size:28px;">Popular Products</h2>
-            <span style="color:#16a34a; font-weight:bold;">View All →</span>
+        <div class="hero-product">
+            🛍️
         </div>
 
-        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:22px;">
+    </div>
 
-            <!-- Product 1 -->
-            <div style="background:white; border-radius:20px; padding:18px; box-shadow:0 4px 15px rgba(0,0,0,0.07); position:relative;">
-                <div style="position:absolute; top:15px; left:15px; background:#dcfce7; color:#15803d; padding:5px 9px; border-radius:12px; font-size:11px; font-weight:bold;">
+</section>
+
+
+<!-- ================= CATEGORIES ================= -->
+
+<section class="section" id="categories">
+
+    <div class="section-header">
+
+        <h2>
+            Shop by Category
+        </h2>
+
+        <a href="#">
+            View All →
+        </a>
+
+    </div>
+
+
+    <div class="categories">
+
+        <div class="category">
+            <div class="category-icon">
+                📱
+            </div>
+            <p>Electronics</p>
+        </div>
+
+        <div class="category">
+            <div class="category-icon">
+                👕
+            </div>
+            <p>Fashion</p>
+        </div>
+
+        <div class="category">
+            <div class="category-icon">
+                🏠
+            </div>
+            <p>Home</p>
+        </div>
+
+        <div class="category">
+            <div class="category-icon">
+                👟
+            </div>
+            <p>Footwear</p>
+        </div>
+
+        <div class="category">
+            <div class="category-icon">
+                🎧
+            </div>
+            <p>Accessories</p>
+        </div>
+
+        <div class="category">
+            <div class="category-icon">
+                🎮
+            </div>
+            <p>Gaming</p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= PRODUCTS ================= -->
+
+<section class="section" id="products">
+
+    <div class="section-header">
+
+        <h2>
+            Trending Products
+        </h2>
+
+        <a href="#">
+            View All →
+        </a>
+
+    </div>
+
+
+    <div class="products">
+
+
+        <!-- Product 1 -->
+
+        <div class="product">
+
+            <div class="product-image">
+
+                <div class="discount">
+                    25% OFF
+                </div>
+
+                <div class="wishlist">
+                    ♡
+                </div>
+
+                📱
+
+            </div>
+
+            <div class="product-info">
+
+                <h3>
+                    Premium Smartphone
+                </h3>
+
+                <div class="rating">
+                    ★★★★★
+                    <span>(128)</span>
+                </div>
+
+                <div class="price">
+
+                    <span class="current-price">
+                        ₹24,999
+                    </span>
+
+                    <span class="old-price">
+                        ₹32,999
+                    </span>
+
+                </div>
+
+                <button class="add-cart">
+                    Add to Cart
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- Product 2 -->
+
+        <div class="product">
+
+            <div class="product-image">
+
+                <div class="discount">
+                    30% OFF
+                </div>
+
+                <div class="wishlist">
+                    ♡
+                </div>
+
+                🎧
+
+            </div>
+
+            <div class="product-info">
+
+                <h3>
+                    Wireless Headphones
+                </h3>
+
+                <div class="rating">
+                    ★★★★☆
+                    <span>(94)</span>
+                </div>
+
+                <div class="price">
+
+                    <span class="current-price">
+                        ₹2,499
+                    </span>
+
+                    <span class="old-price">
+                        ₹3,599
+                    </span>
+
+                </div>
+
+                <button class="add-cart">
+                    Add to Cart
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- Product 3 -->
+
+        <div class="product">
+
+            <div class="product-image">
+
+                <div class="discount">
                     20% OFF
                 </div>
 
-                <div style="height:180px; background:#f9fafb; border-radius:15px; display:flex; justify-content:center; align-items:center; font-size:100px;">
-                    🍎
+                <div class="wishlist">
+                    ♡
                 </div>
 
-                <p style="color:#6b7280; font-size:12px; margin-bottom:5px;">Fresh Fruits</p>
+                👟
 
-                <h3 style="margin:5px 0;">Red Apples</h3>
-
-                <p style="font-size:13px; color:#6b7280;">1 Kg</p>
-
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <span style="font-size:20px; font-weight:bold;">₹120</span>
-                        <span style="text-decoration:line-through; color:#9ca3af; font-size:13px;">₹150</span>
-                    </div>
-
-                    <button style="background:#16a34a; color:white; border:none; border-radius:12px; padding:10px 14px; font-size:18px; cursor:pointer;">
-                        +
-                    </button>
-                </div>
             </div>
 
+            <div class="product-info">
 
-            <!-- Product 2 -->
-            <div style="background:white; border-radius:20px; padding:18px; box-shadow:0 4px 15px rgba(0,0,0,0.07);">
-                <div style="height:180px; background:#f9fafb; border-radius:15px; display:flex; justify-content:center; align-items:center; font-size:100px;">
-                    🥦
+                <h3>
+                    Running Shoes
+                </h3>
+
+                <div class="rating">
+                    ★★★★★
+                    <span>(76)</span>
                 </div>
 
-                <p style="color:#6b7280; font-size:12px; margin-bottom:5px;">Fresh Vegetables</p>
+                <div class="price">
 
-                <h3 style="margin:5px 0;">Fresh Broccoli</h3>
+                    <span class="current-price">
+                        ₹1,999
+                    </span>
 
-                <p style="font-size:13px; color:#6b7280;">500 g</p>
+                    <span class="old-price">
+                        ₹2,499
+                    </span>
 
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <span style="font-size:20px; font-weight:bold;">₹80</span>
-                    </div>
-
-                    <button style="background:#16a34a; color:white; border:none; border-radius:12px; padding:10px 14px; font-size:18px; cursor:pointer;">
-                        +
-                    </button>
-                </div>
-            </div>
-
-
-            <!-- Product 3 -->
-            <div style="background:white; border-radius:20px; padding:18px; box-shadow:0 4px 15px rgba(0,0,0,0.07); position:relative;">
-                <div style="position:absolute; top:15px; left:15px; background:#fef3c7; color:#b45309; padding:5px 9px; border-radius:12px; font-size:11px; font-weight:bold;">
-                    BEST SELLER
                 </div>
 
-                <div style="height:180px; background:#f9fafb; border-radius:15px; display:flex; justify-content:center; align-items:center; font-size:100px;">
-                    🥛
-                </div>
+                <button class="add-cart">
+                    Add to Cart
+                </button>
 
-                <p style="color:#6b7280; font-size:12px; margin-bottom:5px;">Dairy</p>
-
-                <h3 style="margin:5px 0;">Fresh Milk</h3>
-
-                <p style="font-size:13px; color:#6b7280;">1 Liter</p>
-
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <span style="font-size:20px; font-weight:bold;">₹65</span>
-                    </div>
-
-                    <button style="background:#16a34a; color:white; border:none; border-radius:12px; padding:10px 14px; font-size:18px; cursor:pointer;">
-                        +
-                    </button>
-                </div>
-            </div>
-
-
-            <!-- Product 4 -->
-            <div style="background:white; border-radius:20px; padding:18px; box-shadow:0 4px 15px rgba(0,0,0,0.07);">
-                <div style="height:180px; background:#f9fafb; border-radius:15px; display:flex; justify-content:center; align-items:center; font-size:100px;">
-                    🍞
-                </div>
-
-                <p style="color:#6b7280; font-size:12px; margin-bottom:5px;">Bakery</p>
-
-                <h3 style="margin:5px 0;">Brown Bread</h3>
-
-                <p style="font-size:13px; color:#6b7280;">400 g</p>
-
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <span style="font-size:20px; font-weight:bold;">₹45</span>
-                    </div>
-
-                    <button style="background:#16a34a; color:white; border:none; border-radius:12px; padding:10px 14px; font-size:18px; cursor:pointer;">
-                        +
-                    </button>
-                </div>
             </div>
 
         </div>
-    </section>
 
 
-    <!-- Offer Banner -->
-    <section style="margin:0 7% 45px; background:#166534; color:white; border-radius:22px; padding:35px 45px; display:flex; justify-content:space-between; align-items:center;">
+        <!-- Product 4 -->
+
+        <div class="product">
+
+            <div class="product-image">
+
+                <div class="discount">
+                    35% OFF
+                </div>
+
+                <div class="wishlist">
+                    ♡
+                </div>
+
+                ⌚
+
+            </div>
+
+            <div class="product-info">
+
+                <h3>
+                    Smart Watch
+                </h3>
+
+                <div class="rating">
+                    ★★★★☆
+                    <span>(213)</span>
+                </div>
+
+                <div class="price">
+
+                    <span class="current-price">
+                        ₹3,999
+                    </span>
+
+                    <span class="old-price">
+                        ₹6,199
+                    </span>
+
+                </div>
+
+                <button class="add-cart">
+                    Add to Cart
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- Product 5 -->
+
+        <div class="product">
+
+            <div class="product-image">
+
+                <div class="discount">
+                    15% OFF
+                </div>
+
+                <div class="wishlist">
+                    ♡
+                </div>
+
+                💻
+
+            </div>
+
+            <div class="product-info">
+
+                <h3>
+                    Laptop Pro
+                </h3>
+
+                <div class="rating">
+                    ★★★★★
+                    <span>(65)</span>
+                </div>
+
+                <div class="price">
+
+                    <span class="current-price">
+                        ₹59,999
+                    </span>
+
+                    <span class="old-price">
+                        ₹69,999
+                    </span>
+
+                </div>
+
+                <button class="add-cart">
+                    Add to Cart
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- Product 6 -->
+
+        <div class="product">
+
+            <div class="product-image">
+
+                <div class="discount">
+                    40% OFF
+                </div>
+
+                <div class="wishlist">
+                    ♡
+                </div>
+
+                👕
+            </div>
+
+            <div class="product-info">
+
+                <h3>
+                    Premium T-Shirt
+                </h3>
+
+                <div class="rating">
+                    ★★★★☆
+                    <span>(143)</span>
+                </div>
+
+                <div class="price">
+
+                    <span class="current-price">
+                        ₹799
+                    </span>
+
+                    <span class="old-price">
+                        ₹1,299
+                    </span>
+
+                </div>
+
+                <button class="add-cart">
+                    Add to Cart
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- Product 7 -->
+
+        <div class="product">
+
+            <div class="product-image">
+
+                <div class="discount">
+                    25% OFF
+                </div>
+
+                <div class="wishlist">
+                    ♡
+                </div>
+
+                👜
+
+            </div>
+
+            <div class="product-info">
+
+                <h3>
+                    Designer Bag
+                </h3>
+
+                <div class="rating">
+                    ★★★★★
+                    <span>(88)</span>
+                </div>
+
+                <div class="price">
+
+                    <span class="current-price">
+                        ₹1,599
+                    </span>
+
+                    <span class="old-price">
+                        ₹2,199
+                    </span>
+
+                </div>
+
+                <button class="add-cart">
+                    Add to Cart
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- Product 8 -->
+
+        <div class="product">
+
+            <div class="product-image">
+
+                <div class="discount">
+                    20% OFF
+                </div>
+
+                <div class="wishlist">
+                    ♡
+                </div>
+
+                🎮
+
+            </div>
+
+            <div class="product-info">
+
+                <h3>
+                    Gaming Controller
+                </h3>
+
+                <div class="rating">
+                    ★★★★☆
+                    <span>(117)</span>
+                </div>
+
+                <div class="price">
+
+                    <span class="current-price">
+                        ₹3,299
+                    </span>
+
+                    <span class="old-price">
+                        ₹4,199
+                    </span>
+
+                </div>
+
+                <button class="add-cart">
+                    Add to Cart
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= OFFER ================= -->
+
+<section class="offer">
+
+    <div class="offer-box">
 
         <div>
-            <p style="margin:0 0 8px; color:#bbf7d0; font-weight:bold;">LIMITED TIME OFFER</p>
 
-            <h2 style="font-size:32px; margin:5px 0;">
-                Get 30% OFF on your first order 🎉
+            <h2>
+                Special Weekend Offer 🎉
             </h2>
 
-            <p style="margin-bottom:0; color:#dcfce7;">
-                Use coupon code: <b>FRESH30</b>
+            <p>
+                Get extra 20% off on orders above ₹2,999.
             </p>
+
         </div>
 
-        <button style="background:#f59e0b; color:#ffffff; border:none; padding:14px 25px; border-radius:25px; font-weight:bold; cursor:pointer;">
-            Grab Offer
-        </button>
+        <a href="#products" class="offer-btn">
+            Shop Deals
+        </a>
 
-    </section>
+    </div>
 
-
-    <!-- Features -->
-    <section style="padding:10px 7% 50px; display:grid; grid-template-columns:repeat(4,1fr); gap:20px;">
-
-        <div style="background:white; padding:25px; border-radius:18px; text-align:center;">
-            <div style="font-size:35px;">🚚</div>
-            <h3>Fast Delivery</h3>
-            <p style="font-size:13px; color:#6b7280;">Delivery within 30 minutes</p>
-        </div>
-
-        <div style="background:white; padding:25px; border-radius:18px; text-align:center;">
-            <div style="font-size:35px;">🥬</div>
-            <h3>Fresh Products</h3>
-            <p style="font-size:13px; color:#6b7280;">Quality checked groceries</p>
-        </div>
-
-        <div style="background:white; padding:25px; border-radius:18px; text-align:center;">
-            <div style="font-size:35px;">🔒</div>
-            <h3>Secure Payment</h3>
-            <p style="font-size:13px; color:#6b7280;">100% secure checkout</p>
-        </div>
-
-        <div style="background:white; padding:25px; border-radius:18px; text-align:center;">
-            <div style="font-size:35px;">💰</div>
-            <h3>Best Prices</h3>
-            <p style="font-size:13px; color:#6b7280;">Great deals every day</p>
-        </div>
-
-    </section>
+</section>
 
 
-    <!-- Footer -->
-    <footer style="background:#111827; color:white; padding:45px 7%;">
+<!-- ================= FOOTER ================= -->
 
-        <div style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:40px;">
+<footer id="contact">
 
-            <div>
-                <h2 style="color:#4ade80;">🛒 FreshCart</h2>
+    <div class="footer-grid">
 
-                <p style="color:#9ca3af; line-height:1.7;">
-                    Your one-stop online grocery store for fresh, quality and affordable products delivered to your doorstep.
-                </p>
+        <div>
+
+            <div class="footer-logo">
+                Shop<span>Nest</span>
             </div>
 
-            <div>
-                <h3>Company</h3>
-                <p style="color:#9ca3af;">About Us</p>
-                <p style="color:#9ca3af;">Careers</p>
-                <p style="color:#9ca3af;">Contact</p>
-            </div>
-
-            <div>
-                <h3>Support</h3>
-                <p style="color:#9ca3af;">Help Center</p>
-                <p style="color:#9ca3af;">Delivery Info</p>
-                <p style="color:#9ca3af;">Returns</p>
-            </div>
-
-            <div>
-                <h3>Follow Us</h3>
-                <p style="font-size:24px;">📘 📸 🐦</p>
-            </div>
+            <p>
+                Your everyday online shopping destination.
+                Discover great products at amazing prices.
+            </p>
 
         </div>
 
-        <hr style="border:none; border-top:1px solid #374151; margin:35px 0 20px;">
 
-        <p style="text-align:center; color:#9ca3af; margin:0;">
-            © 2026 FreshCart. All rights reserved.
-        </p>
+        <div>
 
-    </footer>
+            <h4>Shop</h4>
+
+            <a href="#">Electronics</a>
+
+            <a href="#">Fashion</a>
+
+            <a href="#">Home</a>
+
+            <a href="#">Deals</a>
+
+        </div>
+
+
+        <div>
+
+            <h4>Help</h4>
+
+            <a href="#">Contact Us</a>
+
+            <a href="#">Shipping</a>
+
+            <a href="#">Returns</a>
+
+            <a href="#">FAQ</a>
+
+        </div>
+
+
+        <div>
+
+            <h4>Follow Us</h4>
+
+            <a href="#">Instagram</a>
+
+            <a href="#">Facebook</a>
+
+            <a href="#">Twitter</a>
+
+            <a href="#">YouTube</a>
+
+        </div>
+
+    </div>
+
+
+    <div class="copyright">
+
+        © 2026 ShopNest. All rights reserved.
+
+    </div>
+
+</footer>
+
 
 </body>
 </html>
